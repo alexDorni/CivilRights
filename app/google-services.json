@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "618507085475",
+    "firebase_url": "https://myfirebasecivilusers.firebaseio.com",
+    "project_id": "myfirebasecivilusers",
+    "storage_bucket": "myfirebasecivilusers.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618507085475:android:2edd5d751cf128de",
+        "android_client_info": {
+          "package_name": "com.example.heroalex.copscivilslicense"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618507085475-naakshgbff2hpthm8brvg73p13078qf0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf6fJe2tnTKZOW_qAuIvP-mU7_DmDHmVk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

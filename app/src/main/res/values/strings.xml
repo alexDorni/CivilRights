@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CopsCivilsLicense</string>
+    <string name="first_page">Cops And Civils</string>
+    <string name="vCivil">Civil</string>
+    <string name="vCop">Cop</string>
+    <string name="vTextOr">Or</string>
+    <string name="forgot_pass">Forgot Pass?</string>
+    <string name="log_in">Log In</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+</resources>
