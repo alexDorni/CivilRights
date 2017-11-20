@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
                 int duration = Toast.LENGTH_SHORT;
                 Toast t = Toast.makeText(ct, "Hoho a intrat pe 2", duration);
                 t.show();
-                //test
             }
         });
 
