@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="left"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="left"
+        android:orientation="vertical">
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/layout_input_first_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+        <AutoCompleteTextView
+            android:layout_margin="15dp"
+            android:id="@+id/input_first_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/first_name"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <AutoCompleteTextView
+           android:layout_margin="25dp"
+           android:id="@+id/input_last_name"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:hint="@string/last_name"/>
+
+        <AutoCompleteTextView
+            android:layout_margin="25dp"
+            android:id="@+id/input_password_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"/>
+
+        <!-- Aici'sa cum ar trebui s'arate mai frumos? -->
+            <LinearLayout
+                android:id="@+id/layout_select_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="25dp"
+                    android:textSize="18dp"
+                    android:hint="@string/gender_sex"
+                    />
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="left"
+                    android:layout_marginTop="25dp"
+                    android:layout_margin="15dp">
+
+                </Spinner>
+            </LinearLayout>
+        <!-- Aici'sa se termina -->
+
+        <AutoCompleteTextView
+            android:layout_margin="25dp"
+            android:id="@+id/input_email_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email"/>
+        <AutoCompleteTextView
+            android:layout_margin="25dp"
+            android:id="@+id/input_email_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email"/>
+
+    </LinearLayout>
+</ScrollView>

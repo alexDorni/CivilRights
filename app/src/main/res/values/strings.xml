@@ -1,11 +1,31 @@
 <resources>
+
+    <!-- activity_main -->
     <string name="app_name">CopsCivilsLicense</string>
     <string name="first_page">Cops And Civils</string>
     <string name="vCivil">Civil</string>
     <string name="vCop">Cop</string>
+
+    <!-- dialog_log -->
     <string name="vTextOr">Or</string>
     <string name="forgot_pass">Forgot Pass?</string>
     <string name="log_in">Log In</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+
+    <!-- register_log -->
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="gender_sex">Gender</string>
+    <string name="close_one">Close One Name</string>
+    <string name="close_one_number">Close One Number</string>
+    <string name="register">Register</string>
+    <string-array name="spinner_blood_stringArray">
+        <item>Last Name</item>
+        <item>Email</item>
+        <item>Password</item>
+        <item>Blood Type</item>
+        <item>Close One Name</item>
+        <item>Number of close one</item>
+    </string-array>
 </resources>
