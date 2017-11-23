@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,10 +24,10 @@ public class MainActivity extends AppCompatActivity{
     private Button mButtonCop = null;
 
     //for dialog
-    public TextInputLayout mFieldEmailLayout;
-    public AutoCompleteTextView mFieldEmail;
-    public TextInputLayout mFieldPasswordLayout;
-    public EditText mFieldPassword;
+    private TextInputLayout mFieldEmailLayout;
+    private AutoCompleteTextView mFieldEmail;
+    private TextInputLayout mFieldPasswordLayout;
+    private EditText mFieldPassword;
     private Dialog dialog;
 
     @Override
@@ -86,7 +87,8 @@ public class MainActivity extends AppCompatActivity{
         txtRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent i = new Intent(MainActivity.this, RegisterCivil.class);
+                startActivity(i);
             }
         });
 
@@ -105,14 +107,19 @@ public class MainActivity extends AppCompatActivity{
         String email = mFieldEmail.getText().toString().trim();
         String password = mFieldPassword.getText().toString().trim();
 
+        mFieldPasswordLayout.setErrorEnabled(false);
+        mFieldEmailLayout.setErrorEnabled(false);
+
         if (TextUtils.isEmpty(email)){
 
-            Toast.makeText(this, "Please enter the email", Toast.LENGTH_SHORT);
+            Toast.makeText(this, "Please enter the email", Toast.LENGTH_SHORT).show();
+            mFieldEmail.setError("Please enter the email");
             return;
         }
         if (TextUtils.isEmpty(password)){
 
-            Toast.makeText(this, "Please insert the password", Toast.LENGTH_SHORT);
+            Toast.makeText(this, "Please insert the password", Toast.LENGTH_SHORT).show();
+            mFieldPassword.setError("Please insert the password");
             return;
         }
 

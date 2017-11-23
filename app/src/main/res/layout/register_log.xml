@@ -9,33 +9,42 @@
         android:gravity="center"
         android:layout_gravity="left"
         android:orientation="vertical">
+
         <android.support.design.widget.TextInputLayout
             android:id="@+id/layout_input_first_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:padding="15dp">
         <AutoCompleteTextView
-            android:layout_margin="15dp"
             android:id="@+id/input_first_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/first_name"/>
-
         </android.support.design.widget.TextInputLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/layout_input_last_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
         <AutoCompleteTextView
-           android:layout_margin="25dp"
            android:id="@+id/input_last_name"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:hint="@string/last_name"/>
+        </android.support.design.widget.TextInputLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/layout_input_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
         <AutoCompleteTextView
-            android:layout_margin="25dp"
             android:id="@+id/input_password_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"/>
+        </android.support.design.widget.TextInputLayout>
 
         <!-- Aici'sa cum ar trebui s'arate mai frumos? -->
             <LinearLayout
@@ -53,28 +62,48 @@
                     />
 
                 <Spinner
+                    android:id="@+id/spinner_sex_registration"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:layout_gravity="left"
                     android:layout_marginTop="25dp"
-                    android:layout_margin="15dp">
+                    android:layout_margin="5dp">
 
                 </Spinner>
             </LinearLayout>
         <!-- Aici'sa se termina -->
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/layout_input_close_one_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
         <AutoCompleteTextView
-            android:layout_margin="25dp"
+            android:id="@+id/input_close_one_person"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/close_one"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/layout_input_close_one_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+        <AutoCompleteTextView
             android:id="@+id/input_email_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/email"/>
-        <AutoCompleteTextView
-            android:layout_margin="25dp"
-            android:id="@+id/input_email_register"
+            android:hint="@string/close_one_number"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/email"/>
+            android:layout_margin="60dp"
+            android:text="@string/Inregistration"
+            style="@style/BasicButton"/>
+
 
     </LinearLayout>
 </ScrollView>

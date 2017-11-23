@@ -14,7 +14,7 @@
         android:id="@+id/civilButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/vCivil"></Button>
+        android:text="@string/vCivil"/>
 
     <TextView
         android:layout_width="wrap_content"

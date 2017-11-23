@@ -20,12 +20,15 @@
     <string name="close_one">Close One Name</string>
     <string name="close_one_number">Close One Number</string>
     <string name="register">Register</string>
+    <string name="Inregistration">Registration</string>
     <string-array name="spinner_blood_stringArray">
-        <item>Last Name</item>
-        <item>Email</item>
-        <item>Password</item>
-        <item>Blood Type</item>
-        <item>Close One Name</item>
-        <item>Number of close one</item>
+        <item>O</item>
+        <item>A</item>
+        <item>B</item>
+        <item>AB</item>
+    </string-array>
+    <string-array name="spinner_sex_array">
+        <item>F</item>
+        <item>M</item>
     </string-array>
 </resources>
