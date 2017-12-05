@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity{
     private AutoCompleteTextView mFieldEmail;
     private TextInputLayout mFieldPasswordLayout;
     private EditText mFieldPassword;
-    private Dialog dialog;
+    private Dialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +56,16 @@ public class MainActivity extends AppCompatActivity{
 
     private void createDialog(){
 
-        dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_log);
+        mDialog = new Dialog(this);
+        mDialog.setContentView(R.layout.dialog_log);
 
-        mFieldEmailLayout = dialog.findViewById(R.id.layout_input_email);
-        mFieldEmail = dialog.findViewById(R.id.input_email);
-        mFieldPasswordLayout = dialog.findViewById(R.id.layout_input_passwd);
-        mFieldPassword = dialog.findViewById(R.id.input_password);
-        Button loginButton = dialog.findViewById(R.id.button_log_in);
-        TextView txtRecuperareParola = dialog.findViewById(R.id.text_forgot_passwd);
-        TextView txtRegister = dialog.findViewById(R.id.text_spec_register);
+        mFieldEmailLayout = mDialog.findViewById(R.id.layout_input_email);
+        mFieldEmail = mDialog.findViewById(R.id.input_email);
+        mFieldPasswordLayout = mDialog.findViewById(R.id.layout_input_passwd);
+        mFieldPassword = mDialog.findViewById(R.id.input_password);
+        Button loginButton = mDialog.findViewById(R.id.button_log_in);
+        TextView txtRecuperareParola = mDialog.findViewById(R.id.text_forgot_passwd);
+        TextView txtRegister = mDialog.findViewById(R.id.text_spec_register);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,10 +96,10 @@ public class MainActivity extends AppCompatActivity{
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        if(dialog.getWindow()!=null) {
-            dialog.getWindow().setAttributes(params);
+        if(mDialog.getWindow()!=null) {
+            mDialog.getWindow().setAttributes(params);
         }
-    dialog.show();
+    mDialog.show();
     }
 
     // TODO asta

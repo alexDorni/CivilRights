@@ -17,6 +17,7 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="gender_sex">Gender</string>
+    <string name="blood_type">Blood Type</string>
     <string name="close_one">Close One Name</string>
     <string name="close_one_number">Close One Number</string>
     <string name="register">Register</string>

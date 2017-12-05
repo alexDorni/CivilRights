@@ -71,7 +71,7 @@
         android:layout_margin="10dp"
         android:textAlignment="center"
         android:textSize="18sp"
-        android:text="Nu ai cont? Înregistrează-te!"
+        android:text="Don't have an account? Register here"
         android:textColor="@color/colorPrimaryDark" />
 
 </LinearLayout>
