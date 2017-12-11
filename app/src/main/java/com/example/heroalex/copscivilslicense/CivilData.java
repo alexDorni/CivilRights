@@ -17,7 +17,7 @@ public class CivilData{
     private String BloodType;
     private  String CloseOneNumber;
     private  String CloseOneName;
-//    private String CoordonatesGPS;
+    private String GPSCoordonates;
 
     private CivilData(CivilDataBuilder builder){
         this.FistName = builder.FistName;
@@ -27,6 +27,7 @@ public class CivilData{
         this.BloodType = builder.BloodType;
         this.CloseOneName = builder.CloseOneName;
         this.CloseOneNumber = builder.CloseOneNumber;
+        this.GPSCoordonates = builder.GPSCoordonates;
     }
 
 
@@ -36,22 +37,18 @@ public class CivilData{
     public String getLastName(){
         return  LastName;
     }
-    public String getPassword(){
-        return Password;
-    }
+    public String getPassword() { return Password; }
     public String getGender(){
-        return Gender;
+                    return Gender;
     }
-    public String getBloodType(){
-        return  BloodType;
-    }
-    public  String getCloseOneNumber(){
+    public String getBloodType(){ return  BloodType; }
+    public String getCloseOneNumber(){
         return CloseOneNumber;
     }
     public String getCloseOneName(){
         return CloseOneName;
     }
-
+    public String getGPSCoordonates(){ return GPSCoordonates; }
 
     public static class CivilDataBuilder{
         private final String FistName;
@@ -61,7 +58,7 @@ public class CivilData{
         private String BloodType;
         private  String CloseOneNumber;
         private  String CloseOneName;
- //       private String CoordonatesGPS;
+        private String GPSCoordonates;
 
         public CivilDataBuilder(String FistName, String LastName){
             this.FistName = FistName;
@@ -86,6 +83,10 @@ public class CivilData{
         }
         public CivilDataBuilder closeOneNumber(String CloseOneNumber){
             this.CloseOneNumber = CloseOneNumber;
+            return this;
+        }
+        public CivilDataBuilder gps(String GPSCoordonates){
+            this.GPSCoordonates = GPSCoordonates;
             return this;
         }
         public CivilData build(){
