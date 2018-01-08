@@ -12,11 +12,11 @@ import android.widget.Spinner;
 public class CivilData{
     private final String FistName;
     private final String LastName;
-    private  String Password;
+    private String Password;
     private String Gender;
     private String BloodType;
-    private  String CloseOneNumber;
-    private  String CloseOneName;
+    private String CloseOneNumber;
+    private String CloseOneName;
     private String GPSCoordonates;
 
     private CivilData(CivilDataBuilder builder){
@@ -53,11 +53,11 @@ public class CivilData{
     public static class CivilDataBuilder{
         private final String FistName;
         private final String LastName;
-        private  String Password;
+        private String Password;
         private String Gender;
         private String BloodType;
-        private  String CloseOneNumber;
-        private  String CloseOneName;
+        private String CloseOneNumber;
+        private String CloseOneName;
         private String GPSCoordonates;
 
         public CivilDataBuilder(String FistName, String LastName){
@@ -89,7 +89,8 @@ public class CivilData{
             this.GPSCoordonates = GPSCoordonates;
             return this;
         }
-        public CivilData build(){
+
+        public CivilData build() {
             return new CivilData(this);
         }
 

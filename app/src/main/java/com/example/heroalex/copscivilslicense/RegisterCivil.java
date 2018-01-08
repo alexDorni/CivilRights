@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -16,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,6 +26,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,19 +43,48 @@ import java.util.Map;
  * Created by Hero Alex on 11/23/2017.
  */
 
-public class RegisterCivil extends Activity {
+public class RegisterCivil extends AppCompatActivity{
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 10;
+    private static final String TAG = "MyActivity";
 
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-    private String mGPSCoordinates;
+    private Firebase mRootRef;
+    private LocationManager mLocationManager;
+    private LocationListener mLocationListener;
+    private String mGPSCoordinates = "null";
+
 
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.register_log);
 
+
+
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mLocationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                mGPSCoordinates = location.getLatitude() + " " + location.getLongitude();
+                Toast.makeText(RegisterCivil.this, mGPSCoordinates, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                Toast.makeText(RegisterCivil.this, "GPS provider enabled:" + provider, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Toast.makeText(RegisterCivil.this, "GPS provider disabled:" + provider, Toast.LENGTH_SHORT).show();
+            }
+        };
+
         spinnerSexAdapter();
         spineerBloodType();
-
 
         Button mButtonRegister = (Button) findViewById(R.id.button_registration);
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
@@ -68,14 +100,16 @@ public class RegisterCivil extends Activity {
                 final String CloseOneName = ((EditText) findViewById(R.id.input_close_one_name)).getText().toString();
                 final String CloseOneNumber = ((EditText) findViewById(R.id.input_close_one_number)).getText().toString();
 
-                gpsCoordinatesMethod();
+               // mRootRef = new Firebase("https://myfirebasecivilusers.firebaseio.com/Civil");
 
-                //  mGPSCoordinates = "ceva";
+
+
                 Toast.makeText(getApplicationContext(), mGPSCoordinates, Toast.LENGTH_SHORT).show();
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-                DatabaseReference usersRef = database.getReference("civil");
+                DatabaseReference usersRef = database.getReference();
+                usersRef.child("civil");
 
                 usersRef.setValue(new CivilData.CivilDataBuilder(FirstName, LastName)
                         .password(Password)
@@ -89,7 +123,6 @@ public class RegisterCivil extends Activity {
         });
 
     }
-
 
     private void spinnerSexAdapter() {
         Spinner spinnerSex = (Spinner) findViewById(R.id.spinner_sex_registration);
@@ -108,6 +141,60 @@ public class RegisterCivil extends Activity {
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getGpsCoordinates();
+    }
+
+    private boolean checkPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // cere permisiuni
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
+                return false;
+            }
+        }
+        // avem permisiuni
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permisiuni acordate cerem din nou coordonatele
+                    getGpsCoordinates();
+                } else {
+                    Toast.makeText(RegisterCivil.this, "No permission for this request", Toast.LENGTH_SHORT).show();
+                }
+        }
+    }
+    private void getGpsCoordinates() {
+        if (checkPermission()) {
+            if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Log.d("Location", "GPS enabled");
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+            } else {
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0 , 0, mLocationListener);
+            }
+
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mLocationManager.removeUpdates(mLocationListener);
+    }
+    /*
+
     private void gpsCoordinatesMethod() {
         if(Build.VERSION.SDK_INT >= 23 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ))
@@ -118,31 +205,13 @@ public class RegisterCivil extends Activity {
                             Manifest.permission.INTERNET}, 10);
                     return;
                 }
-                else{
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, locationListener);
-                }
-        }
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-
-
-        locationListener = new LocationListener() {
+            }
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener() {
             @Override
-            public void onLocationChanged(Location loc) {
-                /////////////////////////////////////////////////////////////////////// TREBUIE REFACUT CUMVA ///////////////////////////////////////////////////////////////////
-                Toast.makeText(
-                        getBaseContext(),
-                        "Location changed: Lat: " + loc.getLatitude() + " Lng: "
-                                + loc.getLongitude(), Toast.LENGTH_SHORT).show();
-                String longitude = "" + loc.getLongitude();
-
-                String latitude = "" + loc.getLatitude();
-
-
-                mGPSCoordinates = latitude + " " + longitude;
-
-                Toast.makeText(getApplicationContext(), (String) mGPSCoordinates, Toast.LENGTH_SHORT).show();
+            public void onLocationChanged(Location location) {
+                mGPSCoordinates = "" + location.getLatitude() + " " + location.getLongitude();
+                Log.d(TAG, mGPSCoordinates);
             }
 
             @Override
@@ -161,8 +230,10 @@ public class RegisterCivil extends Activity {
                 startActivity(intent);
             }
         };
+
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
+
     }
-
-
-
+    */
 }
