@@ -96,20 +96,14 @@ public class RegisterCivil extends AppCompatActivity{
                 final String LastName = ((EditText) findViewById(R.id.input_last_name)).getText().toString();
                 final String Password = ((EditText) findViewById(R.id.input_password_register)).getText().toString();
                 final String Gender = ((Spinner) findViewById(R.id.spinner_sex_registration)).getSelectedItem().toString();
+                final String EmailSign = ((EditText) findViewById(R.id.sign_up_email)).getText().toString().replaceAll("[.]", ",");
                 final String BloodType = ((Spinner) findViewById(R.id.spinner_blood_type_registration)).getSelectedItem().toString();
                 final String CloseOneName = ((EditText) findViewById(R.id.input_close_one_name)).getText().toString();
                 final String CloseOneNumber = ((EditText) findViewById(R.id.input_close_one_number)).getText().toString();
 
-               // mRootRef = new Firebase("https://myfirebasecivilusers.firebaseio.com/Civil");
+                mRootRef = new Firebase("https://myfirebasecivilusers.firebaseio.com/civils");
 
-
-
-                Toast.makeText(getApplicationContext(), mGPSCoordinates, Toast.LENGTH_SHORT).show();
-
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-                DatabaseReference usersRef = database.getReference();
-                usersRef.child("civil");
+                Firebase usersRef = mRootRef.child(EmailSign);
 
                 usersRef.setValue(new CivilData.CivilDataBuilder(FirstName, LastName)
                         .password(Password)
@@ -193,47 +187,4 @@ public class RegisterCivil extends AppCompatActivity{
         super.onStop();
         mLocationManager.removeUpdates(mLocationListener);
     }
-    /*
-
-    private void gpsCoordinatesMethod() {
-        if(Build.VERSION.SDK_INT >= 23 && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ))
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.INTERNET}, 10);
-                    return;
-                }
-            }
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                mGPSCoordinates = "" + location.getLatitude() + " " + location.getLongitude();
-                Log.d(TAG, mGPSCoordinates);
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-        };
-
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-
-
-    }
-    */
 }

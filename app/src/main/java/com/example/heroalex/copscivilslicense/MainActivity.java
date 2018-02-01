@@ -17,6 +17,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
+import com.firebase.client.Query;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 public class MainActivity extends AppCompatActivity{
 
     //button civil & cop
@@ -61,11 +71,10 @@ public class MainActivity extends AppCompatActivity{
 
         mFieldEmailLayout = mDialog.findViewById(R.id.layout_input_email);
         mFieldEmail = mDialog.findViewById(R.id.input_email);
-        mFieldPasswordLayout = mDialog.findViewById(R.id.layout_input_passwd);
         mFieldPassword = mDialog.findViewById(R.id.input_password);
         Button loginButton = mDialog.findViewById(R.id.button_log_in);
         TextView txtRecuperareParola = mDialog.findViewById(R.id.text_forgot_passwd);
-        TextView txtRegister = mDialog.findViewById(R.id.text_spec_register);
+        TextView txt_Sign_Up_Register = mDialog.findViewById(R.id.text_spec_register);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +93,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        txtRegister.setOnClickListener(new View.OnClickListener() {
+        txt_Sign_Up_Register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, RegisterCivil.class);
@@ -102,13 +111,11 @@ public class MainActivity extends AppCompatActivity{
     mDialog.show();
     }
 
-    // TODO asta
     private void validateFields(){
-        String email = mFieldEmail.getText().toString().trim();
-        String password = mFieldPassword.getText().toString().trim();
 
-        mFieldPasswordLayout.setErrorEnabled(false);
-        mFieldEmailLayout.setErrorEnabled(false);
+        String email = mFieldEmail.getText().toString();
+        String password = mFieldPassword.getText().toString();
+
 
         if (TextUtils.isEmpty(email)){
 
@@ -123,7 +130,42 @@ public class MainActivity extends AppCompatActivity{
             return;
         }
 
+
+        //-------------------------------------------   DE REVAZUT/ NU VEDE EXACT EMAIL URILE DIN BAZA DE DATE ---------------------------------------//////////////////
+
+        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+        mRootRef.child("civils").equalTo(email.replaceAll("[.]", ",")).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()){
+                            Toast.makeText(getApplicationContext(), "Intrat", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "Nu exista", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }
+        );
+
+        //-------------------------------------------   DE REVAZUT/ CRAPA ---------------------------------------//////////////////
+/*
+
         //Verificare cu firebase
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            String name = user.getDisplayName();
+            email = user.getEmail();
+
+            Toast.makeText(this, name + " " + email, Toast.LENGTH_SHORT).show();
+
+        }*/
     }
 
 
