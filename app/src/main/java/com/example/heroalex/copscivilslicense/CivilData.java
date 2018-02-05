@@ -10,8 +10,8 @@ import android.widget.Spinner;
  */
 
 public class CivilData{
-    private final String FistName;
-    private final String LastName;
+    private String FirstName;
+    private String LastName;
     private String Password;
     private String Gender;
     private String BloodType;
@@ -20,7 +20,7 @@ public class CivilData{
     private String GPSCoordonates;
 
     private CivilData(CivilDataBuilder builder){
-        this.FistName = builder.FistName;
+        this.FirstName = builder.FirstName;
         this.LastName = builder.LastName;
         this.Password = builder.Password;
         this.Gender = builder.Gender;
@@ -31,8 +31,8 @@ public class CivilData{
     }
 
 
-    public String getFistName(){
-        return FistName;
+    public String getFirstName(){
+        return FirstName;
     }
     public String getLastName(){
         return  LastName;
@@ -51,8 +51,8 @@ public class CivilData{
     public String getGPSCoordonates(){ return GPSCoordonates; }
 
     public static class CivilDataBuilder{
-        private final String FistName;
-        private final String LastName;
+        private String FirstName;
+        private String LastName;
         private String Password;
         private String Gender;
         private String BloodType;
@@ -60,11 +60,15 @@ public class CivilData{
         private String CloseOneName;
         private String GPSCoordonates;
 
-        public CivilDataBuilder(String FistName, String LastName){
-            this.FistName = FistName;
-            this.LastName = LastName;
-        }
 
+        public  CivilDataBuilder firstName(String firstName){
+            this.FirstName = firstName;
+            return  this;
+        }
+        public  CivilDataBuilder lastName(String lastName){
+            this.LastName = lastName;
+            return  this;
+        }
         public  CivilDataBuilder password(String Password){
             this.Password = Password;
             return  this;

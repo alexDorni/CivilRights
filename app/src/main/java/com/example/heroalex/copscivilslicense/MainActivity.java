@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,10 +41,62 @@ public class MainActivity extends AppCompatActivity{
     private EditText mFieldPassword;
     private Dialog mDialog;
 
+    //data Users in firebase
+    public enum eeee{
+        male, female;
+    }
+
+    private final int mmaxFirebaseChilds = 8;
+
+    public enum menumDataFirebase{
+        BLOOD("bloodType", 0),
+        CLOSEONENAME("closeOneName", 1),
+        CLOSEONENUMBER("closeOneNumber", 2),
+        FIRSTNAME("firstName", 3),
+        GENDER("gender", 4),
+        GPSCOORDINATES("gpscoordinates", 5),
+        LASTNAME("lastName", 6),
+        PASSWORD("password", 7);
+
+        private String stringValue;
+        private int intValue;
+        private menumDataFirebase(String toString, int value) {
+            stringValue = toString;
+            intValue = value;
+        }
+        private menumDataFirebase(int value){
+            intValue = value;
+
+
+        }
+        public void funct(){
+
+        }
+        @Override
+        public String toString() {
+
+            return stringValue;
+        }
+    }
+
+    /*
+    private final static String[] arrayData = {
+            "bloodType",
+            "closeOneName",
+            "closeOneNumber",
+            "firstName",
+            "gender",
+            "gpscoordonates",
+            "lastName",
+            "password"
+    };
+    */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         mButtonCivil = findViewById(R.id.civilButton);
         mButtonCivil.setOnClickListener(new View.OnClickListener() {
@@ -116,7 +169,6 @@ public class MainActivity extends AppCompatActivity{
         String email = mFieldEmail.getText().toString();
         String password = mFieldPassword.getText().toString();
 
-
         if (TextUtils.isEmpty(email)){
 
             Toast.makeText(this, "Please enter the email", Toast.LENGTH_SHORT).show();
@@ -134,25 +186,28 @@ public class MainActivity extends AppCompatActivity{
         //-------------------------------------------   DE REVAZUT/ NU VEDE EXACT EMAIL URILE DIN BAZA DE DATE ---------------------------------------//////////////////
 
         DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-        mRootRef.child("civils").equalTo(email.replaceAll("[.]", ",")).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()){
-                            Toast.makeText(getApplicationContext(), "Intrat", Toast.LENGTH_SHORT).show();
+
+      //for (int indexEnumData = 0; indexEnumData < mmaxFirebaseChilds; ++indexEnumData){
+
+            mRootRef.child("civils").child(email.replaceAll("[.]", ",")).child(new CivilData.CivilDataBuilder()
+                    .firstName("firstName")
+                    .build()
+                    .getFirstName()).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            Toast.makeText(getApplicationContext(), dataSnapshot.getValue(String.class), Toast.LENGTH_SHORT).show();
                         }
-                        else{
-                            Toast.makeText(getApplicationContext(), "Nu exista", Toast.LENGTH_SHORT).show();
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
                         }
-
                     }
+            );
+       // }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                }
-        );
 
         //-------------------------------------------   DE REVAZUT/ CRAPA ---------------------------------------//////////////////
 /*

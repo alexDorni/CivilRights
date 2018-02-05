@@ -22,14 +22,27 @@
     <string name="close_one_number">Close One Number</string>
     <string name="register">Register</string>
     <string name="Inregistration">Registration</string>
+
     <string-array name="spinner_blood_stringArray">
         <item>O</item>
         <item>A</item>
         <item>B</item>
         <item>AB</item>
     </string-array>
+
     <string-array name="spinner_sex_array">
         <item>F</item>
         <item>M</item>
+    </string-array>
+
+    <string-array name="array_for_firebase_data">
+        <item>bloodType</item>
+        <item>closeOneName</item>
+        <item>closeOneNumber</item>
+        <item>firstName</item>
+        <item>gender</item>
+        <item>gpscoordonates</item>
+        <item>lastName</item>
+        <item>password</item>
     </string-array>
 </resources>

@@ -105,7 +105,9 @@ public class RegisterCivil extends AppCompatActivity{
 
                 Firebase usersRef = mRootRef.child(EmailSign);
 
-                usersRef.setValue(new CivilData.CivilDataBuilder(FirstName, LastName)
+                usersRef.setValue(new CivilData.CivilDataBuilder()
+                        .firstName(FirstName)
+                        .lastName(LastName)
                         .password(Password)
                         .gender(Gender)
                         .bloodType(BloodType)
