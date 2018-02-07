@@ -28,6 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity{
 
     //button civil & cop
@@ -42,10 +44,8 @@ public class MainActivity extends AppCompatActivity{
     private Dialog mDialog;
 
     //data Users in firebase
-    public enum eeee{
-        male, female;
-    }
 
+    /*
     private final int mmaxFirebaseChilds = 8;
 
     public enum menumDataFirebase{
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity{
             return stringValue;
         }
     }
-
+    */
     /*
     private final static String[] arrayData = {
             "bloodType",
@@ -140,9 +140,7 @@ public class MainActivity extends AppCompatActivity{
         txtRecuperareParola.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context ct = getApplicationContext();
-                int duration = Toast.LENGTH_SHORT;
-                Toast.makeText(ct, "Trebuie facut cu uitatul parolei", duration).show();
+                Toast.makeText(getApplicationContext(), "Trebuie facut cu uitatul parolei", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -183,21 +181,24 @@ public class MainActivity extends AppCompatActivity{
         }
 
 
-        //-------------------------------------------   DE REVAZUT/ NU VEDE EXACT EMAIL URILE DIN BAZA DE DATE ---------------------------------------//////////////////
+        //-------------------------------------------   FUNCTIONEAZA PENTRU A VERIFICA O VARIABILA DIN FIREBASE ---------------------------------------//////////////////
 
-        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mmm = mRootRef.child("civils").child(email.replaceAll("[.]", ",")).child("firstName");
 
-      //for (int indexEnumData = 0; indexEnumData < mmaxFirebaseChilds; ++indexEnumData){
-
-            mRootRef.child("civils").child(email.replaceAll("[.]", ",")).child(new CivilData.CivilDataBuilder()
-                    .firstName("firstName")
-                    .build()
-                    .getFirstName()).addListenerForSingleValueEvent(
+            mRootRef.child("civils").child(email.replaceAll("[.]", ",")).child("firstName").addListenerForSingleValueEvent(
                     new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
                             Toast.makeText(getApplicationContext(), dataSnapshot.getValue(String.class), Toast.LENGTH_SHORT).show();
+
+//-------------------------------------------   intra si face update la o variabila data. ---------------------------------------//////////////////
+
+                            mmm.setValue("ceva");
+
+                            Toast.makeText(getApplicationContext(), dataSnapshot.getValue(String.class), Toast.LENGTH_SHORT).show();
+
                         }
 
                         @Override
@@ -206,21 +207,6 @@ public class MainActivity extends AppCompatActivity{
                         }
                     }
             );
-       // }
-
-
-        //-------------------------------------------   DE REVAZUT/ CRAPA ---------------------------------------//////////////////
-/*
-
-        //Verificare cu firebase
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null){
-            String name = user.getDisplayName();
-            email = user.getEmail();
-
-            Toast.makeText(this, name + " " + email, Toast.LENGTH_SHORT).show();
-
-        }*/
     }
 
 
