@@ -9,6 +9,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity{
     private EditText mFieldPassword;
     private Dialog mDialog;
 
+    private static int succesOK = 0;
     //data Users in firebase
 
     /*
@@ -164,8 +167,9 @@ public class MainActivity extends AppCompatActivity{
 
     private void validateFields(){
 
-        String email = mFieldEmail.getText().toString();
-        String password = mFieldPassword.getText().toString();
+        String variableEmail = mFieldEmail.getText().toString();
+        final String email = variableEmail.replaceAll("[.]", ",");
+        final String password = mFieldPassword.getText().toString();
 
         if (TextUtils.isEmpty(email)){
 
@@ -180,33 +184,65 @@ public class MainActivity extends AppCompatActivity{
             return;
         }
 
+        final DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference("civils");
 
-        //-------------------------------------------   FUNCTIONEAZA PENTRU A VERIFICA O VARIABILA DIN FIREBASE ---------------------------------------//////////////////
+        mRootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot civils : dataSnapshot.getChildren()) {
+                        String key = civils.getKey(); // the email
+                        if (email.equals(key)) {
 
-        final DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-        final DatabaseReference mmm = mRootRef.child("civils").child(email.replaceAll("[.]", ",")).child("firstName");
+                            // the email
+                            Log.d("runt", "Key:" + key);
+                            for (DataSnapshot civilsInfo : civils.getChildren()){
 
-            mRootRef.child("civils").child(email.replaceAll("[.]", ",")).child("firstName").addListenerForSingleValueEvent(
-                    new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                if ("password".equals(civilsInfo.getKey())) {
 
-                            Toast.makeText(getApplicationContext(), dataSnapshot.getValue(String.class), Toast.LENGTH_SHORT).show();
+                                    // the password field
+                                    String passwordInfo = civilsInfo.getValue().toString();
+                                    Log.d("runt", "val:" + passwordInfo);
 
-//-------------------------------------------   intra si face update la o variabila data. ---------------------------------------//////////////////
+                                    if (password.equals(passwordInfo)){
 
-                            mmm.setValue("ceva");
+                                        //succes
+                                        succesOK = 1;
+                                        Toast.makeText(getApplicationContext(), "Succes Login", Toast.LENGTH_SHORT).show();
+                                        Log.d("runt", "val: INTRAT");
 
-                            Toast.makeText(getApplicationContext(), dataSnapshot.getValue(String.class), Toast.LENGTH_SHORT).show();
+                                    }
+                                    else{
+
+                                        //error password
+                                        Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_SHORT).show();
+                                        Log.d("runt", "val: " + passwordInfo);
+                                    }
+                                }
+
+                            }
+                            if (succesOK == 1) {
+                                break;
+                            }
 
                         }
+                        else{
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
+                            //error email
+                            Log.d("runt", "Key:" + key);
+                            Toast.makeText(getApplicationContext(), "Wrong email", Toast.LENGTH_SHORT).show();
                         }
-                    }
-            );
+
+                     }
+                }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
     }
 
 

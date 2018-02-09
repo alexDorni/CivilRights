@@ -103,9 +103,9 @@ public class RegisterCivil extends AppCompatActivity{
                 final String CloseOneName = ((EditText) findViewById(R.id.input_close_one_name)).getText().toString();
                 final String CloseOneNumber = ((EditText) findViewById(R.id.input_close_one_number)).getText().toString();
 
-                mRootRef = new Firebase("https://myfirebasecivilusers.firebaseio.com/civils");
+                DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
-                Firebase usersRef = mRootRef.child(EmailSign);
+                DatabaseReference usersRef = mRootRef.child("civils").child(EmailSign);
 
                 usersRef.setValue(new CivilData.CivilDataBuilder()
                         .firstName(FirstName)
