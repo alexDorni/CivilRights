@@ -58,8 +58,7 @@ public class RegisterCivil extends AppCompatActivity{
         setContentView(R.layout.register_log);
 
 
-//-------------------------------------------   UPDATE AUTOMAT LA GPS COORDONATES
-// ---------------------------------------//////////////////
+//-------------------------------------------   UPDATE AUTOMAT LA GPS COORDONATES ---------------------------------------//////////////////
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mLocationListener = new LocationListener() {

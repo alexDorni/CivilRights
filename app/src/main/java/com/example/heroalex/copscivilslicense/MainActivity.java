@@ -45,55 +45,8 @@ public class MainActivity extends AppCompatActivity{
     private EditText mFieldPassword;
     private Dialog mDialog;
 
-    private static int succesOK = 0;
-    //data Users in firebase
-
-    /*
-    private final int mmaxFirebaseChilds = 8;
-
-    public enum menumDataFirebase{
-        BLOOD("bloodType", 0),
-        CLOSEONENAME("closeOneName", 1),
-        CLOSEONENUMBER("closeOneNumber", 2),
-        FIRSTNAME("firstName", 3),
-        GENDER("gender", 4),
-        GPSCOORDINATES("gpscoordinates", 5),
-        LASTNAME("lastName", 6),
-        PASSWORD("password", 7);
-
-        private String stringValue;
-        private int intValue;
-        private menumDataFirebase(String toString, int value) {
-            stringValue = toString;
-            intValue = value;
-        }
-        private menumDataFirebase(int value){
-            intValue = value;
-
-
-        }
-        public void funct(){
-
-        }
-        @Override
-        public String toString() {
-
-            return stringValue;
-        }
-    }
-    */
-    /*
-    private final static String[] arrayData = {
-            "bloodType",
-            "closeOneName",
-            "closeOneNumber",
-            "firstName",
-            "gender",
-            "gpscoordonates",
-            "lastName",
-            "password"
-    };
-    */
+    //ok for login
+    private static int succesOK = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,50 +143,50 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot civils : dataSnapshot.getChildren()) {
-                        String key = civils.getKey(); // the email
-                        if (email.equals(key)) {
+                    String key = civils.getKey(); // the email
+                    if (email.equals(key)) {
+                        Log.d("runt", "Key:" + key);
+                        for (DataSnapshot civilsInfo : civils.getChildren()) {
 
-                            // the email
-                            Log.d("runt", "Key:" + key);
-                            for (DataSnapshot civilsInfo : civils.getChildren()){
+                            if ("password".equals(civilsInfo.getKey())) {
 
-                                if ("password".equals(civilsInfo.getKey())) {
+                                // the password field
+                                String passwordInfo = civilsInfo.getValue().toString();
+                                Log.d("runt", "val:" + passwordInfo);
 
-                                    // the password field
-                                    String passwordInfo = civilsInfo.getValue().toString();
-                                    Log.d("runt", "val:" + passwordInfo);
+                                if (password.equals(passwordInfo)) {
 
-                                    if (password.equals(passwordInfo)){
+                                    //succes
+                                    succesOK = 1;
+                                    Toast.makeText(getApplicationContext(), "Succes Login", Toast.LENGTH_SHORT).show();
+                                    Log.d("runt", "val: INTRAT");
+                                } else {
 
-                                        //succes
-                                        succesOK = 1;
-                                        Toast.makeText(getApplicationContext(), "Succes Login", Toast.LENGTH_SHORT).show();
-                                        Log.d("runt", "val: INTRAT");
-
-                                    }
-                                    else{
-
-                                        //error password
-                                        Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_SHORT).show();
-                                        Log.d("runt", "val: " + passwordInfo);
-                                    }
+                                    //error password
+                                    Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_SHORT).show();
+                                    Log.d("runtErrorPass", "val: " + passwordInfo);
                                 }
-
-                            }
-                            if (succesOK == 1) {
-                                break;
                             }
 
                         }
-                        else{
+                        //succes login
+                        if (succesOK == 1) {
+                            break;
+                        } else {//fail password
+                            succesOK = 0;
+                        }
 
+
+                    } else {
+                        if (succesOK == 0) {
                             //error email
-                            Log.d("runt", "Key:" + key);
+                            Log.d("runtErrorMail", "Key:" + key);
                             Toast.makeText(getApplicationContext(), "Wrong email", Toast.LENGTH_SHORT).show();
                         }
 
-                     }
+                    }
                 }
+            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
