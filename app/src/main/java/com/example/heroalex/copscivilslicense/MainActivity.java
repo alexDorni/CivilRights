@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity{
     private TextInputLayout mFieldPasswordLayout;
     private EditText mFieldPassword;
     private Dialog mDialog;
-
+    public static String mEmailName;
     //ok for login
     private static int succesOK = -1;
 
@@ -90,6 +90,10 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View v) {
                 //connection with FireBase
                 validateFields();
+                Log.d("succAfterValidate", "succesOK: " + succesOK);
+                if (succesOK == 1){
+                    startService(new Intent(getApplicationContext(), ServiceLogin.class));
+                }
             }
         });
 
@@ -99,6 +103,8 @@ public class MainActivity extends AppCompatActivity{
                 Toast.makeText(getApplicationContext(), "Trebuie facut cu uitatul parolei", Toast.LENGTH_SHORT).show();
             }
         });
+
+//////////------------------------------------------------------- REGISTER RUN BACKGROUND? -------------------------------------------------------//
 
         txt_Sign_Up_Register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,10 +166,11 @@ public class MainActivity extends AppCompatActivity{
                                     succesOK = 1;
                                     Toast.makeText(getApplicationContext(), "Succes Login", Toast.LENGTH_SHORT).show();
                                     Log.d("runt", "val: INTRAT");
+                                    break;
                                 } else {
-
                                     //error password
-                                    Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_SHORT).show();
+                                    succesOK = 0;
+                                    Toast.makeText(getApplicationContext(), "Password or email incorrect", Toast.LENGTH_SHORT).show();
                                     Log.d("runtErrorPass", "val: " + passwordInfo);
                                 }
                             }
@@ -171,21 +178,19 @@ public class MainActivity extends AppCompatActivity{
                         }
                         //succes login
                         if (succesOK == 1) {
+                            //for background coordonates
+                            mEmailName = email;
                             break;
-                        } else {//fail password
-                            succesOK = 0;
                         }
-
-
-                    } else {
-                        if (succesOK == 0) {
-                            //error email
-                            Log.d("runtErrorMail", "Key:" + key);
-                            Toast.makeText(getApplicationContext(), "Wrong email", Toast.LENGTH_SHORT).show();
-                        }
-
                     }
                 }
+                Log.d("succesOKstatus", "succesOK: " + succesOK);
+                if (succesOK == -1) {
+                    //error email
+                    Log.d("runtErrorMail", "Key:" + succesOK);
+                    Toast.makeText(getApplicationContext(), "Password or email incorrect", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override
