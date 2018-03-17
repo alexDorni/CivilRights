@@ -19,6 +19,11 @@ public class CivilData{
     private String CloseOneName;
     private String GPSCoordonates;
 
+
+    // de implementat statusul logarii
+    // de implementat statusul protectiei
+
+
     private CivilData(CivilDataBuilder builder){
         this.FirstName = builder.FirstName;
         this.LastName = builder.LastName;

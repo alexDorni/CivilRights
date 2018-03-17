@@ -1,11 +1,17 @@
 package com.example.heroalex.copscivilslicense;
 
+import android.*;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -34,6 +40,7 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity{
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 10;
     //button civil & cop
     private Button mButtonCivil = null;
     private Button mButtonCop = null;
@@ -70,6 +77,7 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
+        checkPermission();
 
     }
 
@@ -90,10 +98,9 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View v) {
                 //connection with FireBase
                 validateFields();
-                Log.d("succAfterValidate", "succesOK: " + succesOK);
-                if (succesOK == 1){
-                    startService(new Intent(getApplicationContext(), ServiceLogin.class));
-                }
+                Log.d("succBeforeValidate", "succesOK: " + succesOK);
+
+
             }
         });
 
@@ -104,7 +111,6 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-//////////------------------------------------------------------- REGISTER RUN BACKGROUND? -------------------------------------------------------//
 
         txt_Sign_Up_Register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,7 +171,8 @@ public class MainActivity extends AppCompatActivity{
                                     //succes
                                     succesOK = 1;
                                     Toast.makeText(getApplicationContext(), "Succes Login", Toast.LENGTH_SHORT).show();
-                                    Log.d("runt", "val: INTRAT");
+                                    Log.d("runtSucc", "intrat");
+                                    Log.d("SuccOkLogin: ", "" + succesOK);
                                     break;
                                 } else {
                                     //error password
@@ -180,7 +187,8 @@ public class MainActivity extends AppCompatActivity{
                         if (succesOK == 1) {
                             //for background coordonates
                             mEmailName = email;
-                            break;
+                            startService(new Intent(getApplicationContext(), ServiceLogin.class));
+                            return;
                         }
                     }
                 }
@@ -189,6 +197,7 @@ public class MainActivity extends AppCompatActivity{
                     //error email
                     Log.d("runtErrorMail", "Key:" + succesOK);
                     Toast.makeText(getApplicationContext(), "Password or email incorrect", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
             }
@@ -201,6 +210,36 @@ public class MainActivity extends AppCompatActivity{
 
 
 
+    }
+
+    private boolean checkPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // cere permisiuni
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
+                return false;
+            }
+        }
+        // avem permisiuni
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permisiuni acordate cerem din nou coordonatele
+                   Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "No permission for this request", Toast.LENGTH_SHORT).show();
+                }
+        }
     }
 
 
