@@ -40,7 +40,7 @@ public class ServiceLogin extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // do your jobs here//-------------------------------------------   UPDATE AUTOMAT LA GPS COORDONATES ---------------------------------------//////////////////
-
+        mEmailName = MainActivity.mEmailName;
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         mLocationListener = new LocationListener() {
@@ -48,17 +48,12 @@ public class ServiceLogin extends Service {
             public void onLocationChanged(Location location) {
                 String mGPSCoordinates = location.getLatitude() + " " + location.getLongitude();
                 Log.d("background Location", mGPSCoordinates + " ceva");
-                mEmailName = MainActivity.mEmailName;
-                final DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference("civils");
 
+                DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference("civils");
 
-                /*java.lang.NullPointerException: Can't pass null for argument 'pathString' in child()
-                at com.google.firebase.database.DatabaseReference.child(Unknown Source)
-                at com.example.heroalex.copscivilslicense.ServiceLogin$1.onLocationChanged(ServiceLogin.java:53)
-                at android.location.LocationManager$ListenerTransport._handleMessage(LocationManager.java:279)
-                */
-                //linia e asta, dupa ce inchid aplicatia din Background
-                mRootRef.child(mEmailName).child("gpscoordonates").setValue(mGPSCoordinates);
+                if (mEmailName != "")
+                    mRootRef.child(mEmailName).child("gpscoordonates").setValue(mGPSCoordinates);
+                Log.d("Email", mEmailName.toString());
             }
 
             @Override

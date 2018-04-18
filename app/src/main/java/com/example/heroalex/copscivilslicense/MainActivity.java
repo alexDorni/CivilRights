@@ -188,6 +188,7 @@ public class MainActivity extends AppCompatActivity{
                             //for background coordonates
                             mEmailName = email;
                             startService(new Intent(getApplicationContext(), ServiceLogin.class));
+
                             return;
                         }
                     }
