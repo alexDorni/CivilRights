@@ -177,7 +177,8 @@ public class RegisterCivil extends AppCompatActivity{
         if (checkPermission()) {
             if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 Log.d("Location", "GPS enabled");
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+
             } else {
                 mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0 , 0, mLocationListener);
             }
