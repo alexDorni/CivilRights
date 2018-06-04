@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -41,18 +42,19 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity{
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 10;
-    //button civil & cop
+
+    // button civil & cop
     private Button mButtonCivil = null;
     private Button mButtonCop = null;
 
-    //for dialog
+    // for dialog
     private TextInputLayout mFieldEmailLayout;
     private AutoCompleteTextView mFieldEmail;
     private TextInputLayout mFieldPasswordLayout;
     private EditText mFieldPassword;
     private Dialog mDialog;
     public static String mEmailName;
-    //ok for login
+    // ok for login
     private static int succesOK = -1;
 
     @Override
@@ -187,7 +189,9 @@ public class MainActivity extends AppCompatActivity{
                         if (succesOK == 1) {
                             //for background coordonates
                             mEmailName = email;
-                            startService(new Intent(getApplicationContext(), ServiceLogin.class));
+                            Intent startIntent = new Intent(getApplicationContext(), ServiceLogin.class);
+                            startIntent.setAction("start");
+                            startService(startIntent);
 
                             return;
                         }

@@ -45,4 +45,10 @@
         <item>lastName</item>
         <item>password</item>
     </string-array>
+
+    <!-- Service_log -->
+    <string name="title_name">Protection</string>
+    <string name="ticker_name">Ticker</string>
+    <string name="content_text">Sunteti protejat</string>
+
 </resources>

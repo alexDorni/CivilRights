@@ -20,7 +20,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBt6AlnROg_O0H_fSRwSeZXnoJAm9av9KE"/>
 
         <!-- for RegisterCivil -->
         <activity
