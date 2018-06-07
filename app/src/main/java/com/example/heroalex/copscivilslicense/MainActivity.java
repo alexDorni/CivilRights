@@ -61,14 +61,13 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        startActivity(new Intent(MainActivity.this, BaseActivity.class));
 
         mButtonCivil = findViewById(R.id.civilButton);
         mButtonCivil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                createDialog();
             }
         });
 
@@ -79,8 +78,7 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
-        checkPermission();
-
+        //checkPermission();
     }
 
     private void createDialog(){

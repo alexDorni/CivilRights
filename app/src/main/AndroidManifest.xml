@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,18 +19,20 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBt6AlnROg_O0H_fSRwSeZXnoJAm9av9KE"/>
+            android:value="AIzaSyBt6AlnROg_O0H_fSRwSeZXnoJAm9av9KE" />
 
         <!-- for RegisterCivil -->
         <activity
             android:name=".RegisterCivil"
             android:label="@string/app_name" />
 
-        <service android:name=".ServiceLogin"></service>
+        <service android:name=".ServiceLogin" />
+
+        <activity android:name=".BaseActivity"></activity>
     </application>
 
 </manifest>

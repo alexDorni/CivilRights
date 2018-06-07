@@ -87,7 +87,7 @@ public class RegisterCivil extends AppCompatActivity{
         spinnerSexAdapter();
         spineerBloodType();
 
-        Button mButtonRegister = (Button) findViewById(R.id.button_registration);
+        Button mButtonRegister = findViewById(R.id.button_registration);
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +122,7 @@ public class RegisterCivil extends AppCompatActivity{
     }
 
     private void spinnerSexAdapter() {
-        Spinner spinnerSex = (Spinner) findViewById(R.id.spinner_sex_registration);
+        Spinner spinnerSex = findViewById(R.id.spinner_sex_registration);
 
         ArrayAdapter<CharSequence> adapterSex = ArrayAdapter.createFromResource(RegisterCivil.this, R.array.spinner_sex_array, android.R.layout.simple_spinner_item);
         adapterSex.setDropDownViewResource(android.R.layout.simple_spinner_item);
@@ -130,7 +130,7 @@ public class RegisterCivil extends AppCompatActivity{
     }
 
     private void spineerBloodType() {
-        Spinner spinnerBlood = (Spinner) findViewById(R.id.spinner_blood_type_registration);
+        Spinner spinnerBlood = findViewById(R.id.spinner_blood_type_registration);
 
         ArrayAdapter<CharSequence> adapterBlood = ArrayAdapter.createFromResource(RegisterCivil.this, R.array.spinner_blood_stringArray, android.R.layout.simple_spinner_item);
         adapterBlood.setDropDownViewResource(android.R.layout.simple_spinner_item);
