@@ -13,6 +13,8 @@ import com.example.heroalex.copscivilslicense.R;
 import com.example.heroalex.copscivilslicense.managers.AuthManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +42,7 @@ public class IndexFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_index, container, false);
+        // atribuie in mod direct fara a specifica findById
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -50,13 +53,24 @@ public class IndexFragment extends BaseFragment {
         unbinder.unbind();
     }
 
+
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            mHelloText.setText(user.getDisplayName());
+
+            DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+
+            DatabaseReference usersRef = mRootRef.child("civils").child(user.getUid());
+
+
+            mHelloText.setText("Sunteti logat cu user-ul : " + user.getDisplayName());
         }
+
+
+        //user.get
         mBtnLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

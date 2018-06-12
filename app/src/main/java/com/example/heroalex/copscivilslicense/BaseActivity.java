@@ -25,12 +25,16 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
-        setContentView(R.layout.activity_base);
         toolbar = findViewById(R.id.toolbar);
         mLoadingLayout = findViewById(R.id.loading_screen);
+
+        // must be null
         toolbar.setTitle("");
+
+        // pune toolbar-ul in pagina
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
+            // back-ul
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -72,6 +76,8 @@ public class BaseActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        // args orice
         fragment.setArguments(args);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame,fragment);

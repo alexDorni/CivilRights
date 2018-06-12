@@ -141,6 +141,7 @@ public class LoginFragment extends BaseFragment {
             } else {
                 showToastMessage(R.string.auth_error_invalid_credentials);
             }
+
         }
     };
 

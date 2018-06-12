@@ -1,13 +1,9 @@
 package com.example.heroalex.copscivilslicense;
 
-import android.*;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -15,29 +11,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -48,12 +29,9 @@ public class MainActivity extends AppCompatActivity{
     private Button mButtonCop = null;
 
     // for dialog
-    private TextInputLayout mFieldEmailLayout;
-    private AutoCompleteTextView mFieldEmail;
-    private TextInputLayout mFieldPasswordLayout;
-    private EditText mFieldPassword;
     private Dialog mDialog;
     public static String mEmailName;
+
     // ok for login
     private static int succesOK = -1;
 
@@ -61,13 +39,12 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        startActivity(new Intent(MainActivity.this, BaseActivity.class));
 
         mButtonCivil = findViewById(R.id.civilButton);
         mButtonCivil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(MainActivity.this, BaseActivity.class));
             }
         });
 
@@ -75,6 +52,8 @@ public class MainActivity extends AppCompatActivity{
         mButtonCop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
 
             }
         });
@@ -86,9 +65,6 @@ public class MainActivity extends AppCompatActivity{
         mDialog = new Dialog(this);
         mDialog.setContentView(R.layout.dialog_log);
 
-        mFieldEmailLayout = mDialog.findViewById(R.id.layout_input_email);
-        mFieldEmail = mDialog.findViewById(R.id.input_email);
-        mFieldPassword = mDialog.findViewById(R.id.input_password);
         Button loginButton = mDialog.findViewById(R.id.button_log_in);
         TextView txtRecuperareParola = mDialog.findViewById(R.id.text_forgot_passwd);
         TextView txt_Sign_Up_Register = mDialog.findViewById(R.id.text_spec_register);
@@ -97,7 +73,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 //connection with FireBase
-                validateFields();
+                // validateFields();
                 Log.d("succBeforeValidate", "succesOK: " + succesOK);
 
 
@@ -112,13 +88,7 @@ public class MainActivity extends AppCompatActivity{
         });
 
 
-        txt_Sign_Up_Register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, RegisterCivil.class);
-                startActivity(i);
-            }
-        });
+
 
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();
@@ -129,7 +99,7 @@ public class MainActivity extends AppCompatActivity{
         }
     mDialog.show();
     }
-
+/*
     private void validateFields(){
 
         String variableEmail = mFieldEmail.getText().toString();
@@ -214,7 +184,7 @@ public class MainActivity extends AppCompatActivity{
 
 
     }
-
+*/
     private boolean checkPermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&

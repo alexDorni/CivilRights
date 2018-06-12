@@ -26,13 +26,12 @@
             android:value="AIzaSyBt6AlnROg_O0H_fSRwSeZXnoJAm9av9KE" />
 
         <!-- for RegisterCivil -->
-        <activity
-            android:name=".RegisterCivil"
-            android:label="@string/app_name" />
 
         <service android:name=".ServiceLogin" />
 
         <activity android:name=".BaseActivity"></activity>
+
+        <activity android:name=".CopMap"></activity>
     </application>
 
 </manifest>
