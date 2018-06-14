@@ -1,6 +1,11 @@
 package com.example.heroalex.copscivilslicense.managers;
 
 
+import android.content.Context;
+import android.content.Intent;
+
+import com.example.heroalex.copscivilslicense.ServiceLogin;
+import com.example.heroalex.copscivilslicense.fragments.IndexFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.AuthResult;
@@ -62,4 +67,6 @@ public class AuthManager {
     public void startLogOut() {
         mAuth.signOut();
     }
+
+
 }

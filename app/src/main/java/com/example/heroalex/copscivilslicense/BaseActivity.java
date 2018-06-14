@@ -20,6 +20,7 @@ public class BaseActivity extends AppCompatActivity {
     private FrameLayout mLoadingLayout;
     public BaseActivity mActivity;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +77,7 @@ public class BaseActivity extends AppCompatActivity {
             finish();
             return;
         }
+
 
         // args orice
         fragment.setArguments(args);

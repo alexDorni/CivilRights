@@ -2,12 +2,18 @@ package com.example.heroalex.copscivilslicense;
 
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,13 +26,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.heroalex.copscivilslicense.fragments.IndexFragment;
+
 public class MainActivity extends AppCompatActivity{
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 10;
+    private static Context context;
 
     // button civil & cop
     private Button mButtonCivil = null;
     private Button mButtonCop = null;
+
+
+    static final int NOTIFICATION_ID = 543;
+
 
     // for dialog
     private Dialog mDialog;
@@ -35,6 +48,8 @@ public class MainActivity extends AppCompatActivity{
     // ok for login
     private static int succesOK = -1;
 
+    public static Notification notification;
+    public static NotificationManagerCompat notificationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,52 +68,14 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
-
+            //Intent i = new Intent(BaseActivity.class);
 
             }
         });
         //checkPermission();
     }
 
-    private void createDialog(){
 
-        mDialog = new Dialog(this);
-        mDialog.setContentView(R.layout.dialog_log);
-
-        Button loginButton = mDialog.findViewById(R.id.button_log_in);
-        TextView txtRecuperareParola = mDialog.findViewById(R.id.text_forgot_passwd);
-        TextView txt_Sign_Up_Register = mDialog.findViewById(R.id.text_spec_register);
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //connection with FireBase
-                // validateFields();
-                Log.d("succBeforeValidate", "succesOK: " + succesOK);
-
-
-            }
-        });
-
-        txtRecuperareParola.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Trebuie facut cu uitatul parolei", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
-
-
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        if(mDialog.getWindow()!=null) {
-            mDialog.getWindow().setAttributes(params);
-        }
-    mDialog.show();
-    }
 /*
     private void validateFields(){
 

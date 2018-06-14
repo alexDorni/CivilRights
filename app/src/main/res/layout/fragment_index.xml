@@ -13,6 +13,17 @@
         android:textStyle="bold"
         android:layout_centerInParent="true"
         />
+    <Button
+        android:id="@+id/button_notification_alert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_above="@id/hello_text"
+        android:layout_centerInParent="true"
+        android:text="Push the Alert"
+        android:textColor="@color/colorAccent"
+        />
+
 
     <TextView
         android:id="@+id/btn_log_out"

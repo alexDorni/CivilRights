@@ -27,7 +27,7 @@ public class CivilData{
         return FirstName;
     }
     public String getGPSCoordonates(){ return GPSCoordonates; }
-    public String StatusPoint() { return StatusPoint; }
+    public String getStatusPoint() { return StatusPoint; }
 
     public static class CivilDataBuilder{
         private String FirstName;

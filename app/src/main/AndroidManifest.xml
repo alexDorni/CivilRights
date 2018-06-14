@@ -32,6 +32,8 @@
         <activity android:name=".BaseActivity"></activity>
 
         <activity android:name=".CopMap"></activity>
+
+        <receiver android:name=".NotificationBroadcast"></receiver>
     </application>
 
 </manifest>
