@@ -35,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 /**
  * Created by Hero Alex on 3/5/2018.
@@ -52,6 +53,7 @@ public class ServiceLogin extends Service{
 
     public static boolean isServiceRunning = false;
     private static LocationListener mLocationListener;
+    private FirebaseCallback firebaseCallback;
 
     public static ArrayMap<String, ArrayList<String>> mHashArrayDataFirebase;
 
@@ -82,18 +84,33 @@ public class ServiceLogin extends Service{
             else {
                 if (MainActivity.mCopBool == true) {
 
+                    // asyncron task
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         mHashArrayDataFirebase = new ArrayMap<>();
 
-                        FirebaseGetData();
-                        if (mHashArrayDataFirebase.isEmpty())
-                            // si este nula... chiar daca in FirebaseGetData merge..
-                            Log.d("arrayMap", "e nula");
-                        else
-                            Log.d("arrayMap", "NU este nula");
+                        FirebaseGetData(new FirebaseCallback() {
+                            @Override
+                            public void onCallback(ArrayMap<String, ArrayList<String>> arrayListArrayMap) {
+
+                                setmHashArrayDataFirebase(mHashArrayDataFirebase);
+                                if (!mHashArrayDataFirebase.isEmpty()) {
+
+                                    // parcurgere date pentru verificare
+                                    for (int i = 0; i < mHashArrayDataFirebase.size(); ++i)
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                            Log.d("Afisare_Data_Users", i + " : " + mHashArrayDataFirebase.keyAt(i) + " : " + mHashArrayDataFirebase.valueAt(i)) ;
+                                        }
+                                }
+                                else{
+                                    Log.d("Afisare_Data_Users", "Array Map empty");
+                                    }
+                            }
+                        });
+
+
                     }
                     else
-                        Log.d("mapArrayError", "Eroare SDK");
+                        Log.d("Afisare_Data_Users", "Eroare SDK pentru task asyncron");
 
                 }
             }
@@ -148,25 +165,27 @@ public class ServiceLogin extends Service{
 
     }
 
-    public void FirebaseGetData(){
+    public void FirebaseGetData(final FirebaseCallback firebaseCallback){
         DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
-
-        mRootRef.addValueEventListener(
+        mRootRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot != null) {
+                            for (DataSnapshot dspUid : dataSnapshot.getChildren()) {
+                                ArrayList<String> arrayListValues = new ArrayList<>();
 
-                        for (DataSnapshot dspUid : dataSnapshot.getChildren()){
-                            ArrayList<String> arrayListValues = new ArrayList<>();
+                                for (DataSnapshot dspVal : dspUid.getChildren()) {
+                                    Log.d("Inside_onDataChange", dspUid.toString() + " Valoarea: " + dspVal.getValue());
+                                    arrayListValues.add(dspVal.getValue().toString());
+                                }
+                                // adaugam in ArrayMap <uid-ul, [firstName, coordGPS, statusPoint]>
+                                mHashArrayDataFirebase.put(dspUid.getKey().toString(), arrayListValues);
 
-                            //get key -> uid
-                            for (DataSnapshot dspVal : dspUid.getChildren()) {
-                                Log.d("firebaseData", dspUid.toString() + " Valoarea: " + dspVal.getValue());
-                                arrayListValues.add(dspVal.getValue().toString());
                             }
-                            // adaugam in ArrayMap <uid-ul, [firstName, coordGPS, statusPoint]>
-                            mHashArrayDataFirebase.put(dspUid.getKey().toString(), arrayListValues);
+                            setmHashArrayDataFirebase(mHashArrayDataFirebase);
+                            firebaseCallback.onCallback(mHashArrayDataFirebase);
                         }
                     }
 
@@ -177,8 +196,12 @@ public class ServiceLogin extends Service{
                     }
                 }
         );
-
     }
+
+    private interface FirebaseCallback{
+        void onCallback(ArrayMap<String, ArrayList<String>> arrayMap);
+    }
+
 
     public void startServiceWithNotification() {
 
@@ -216,6 +239,10 @@ public class ServiceLogin extends Service{
     public void onDestroy() {
         isServiceRunning = false;
         super.onDestroy();
+    }
+
+    public void setmHashArrayDataFirebase(ArrayMap<String, ArrayList<String>> mHashArrayDataFirebase ){
+        this.mHashArrayDataFirebase = mHashArrayDataFirebase;
     }
 
 
