@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.heroalex.copscivilslicense.MainActivity;
 import com.example.heroalex.copscivilslicense.R;
 import com.example.heroalex.copscivilslicense.managers.AuthManager;
 import com.example.heroalex.copscivilslicense.utils.DataUtils;
@@ -119,11 +120,12 @@ public class LoginFragment extends BaseFragment {
                     }
                     break;
                 case R.id.btn_text_register:
-                    getActivity().getSupportFragmentManager().popBackStack(); // maybe null check ... removing current fragment
-                    openFragment(new RegisterFragment());
+                        getActivity().getSupportFragmentManager().popBackStack(); // maybe null check ... removing current fragment
+                        openFragment(new RegisterFragment());
+
                     break;
                 case R.id.btn_text_forgot_password:
-                    openFragment(new ResetPasswordFragment()); // not removing fragment so we can navigate back
+                        openFragment(new ResetPasswordFragment()); // not removing fragment so we can navigate back
                     break;
             }
         }

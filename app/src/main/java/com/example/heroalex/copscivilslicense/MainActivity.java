@@ -38,18 +38,8 @@ public class MainActivity extends AppCompatActivity{
     private Button mButtonCop = null;
 
 
-    static final int NOTIFICATION_ID = 543;
+    public static boolean mCopBool;
 
-
-    // for dialog
-    private Dialog mDialog;
-    public static String mEmailName;
-
-    // ok for login
-    private static int succesOK = -1;
-
-    public static Notification notification;
-    public static NotificationManagerCompat notificationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +49,7 @@ public class MainActivity extends AppCompatActivity{
         mButtonCivil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mCopBool = false;
                 startActivity(new Intent(MainActivity.this, BaseActivity.class));
             }
         });
@@ -67,9 +58,8 @@ public class MainActivity extends AppCompatActivity{
         mButtonCop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-            //Intent i = new Intent(BaseActivity.class);
-
+                mCopBool = true;
+                startActivity(new Intent(MainActivity.this, BaseActivity.class));
             }
         });
         //checkPermission();

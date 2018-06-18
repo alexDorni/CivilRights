@@ -124,6 +124,7 @@ public class RegisterFragment extends BaseFragment {
                     if (validateFields()) {
                         showLoadingProgress();
                         mAuthManager.startUserRegister(mEmailField.getText().toString(), mInputPasswordField.getText().toString(), mRegisterCompleteListener, mRegisterFailureListener);
+
                     }
                     break;
                 case R.id.btn_text_login:
@@ -140,12 +141,28 @@ public class RegisterFragment extends BaseFragment {
             if (getActivity() == null) return;
             hideLoadingProgress();
             if (task.isSuccessful()) {
-                mAuthManager.updateUserName(mFirstNameField.getText().toString());
+                mAuthManager.updateUserName(mFirstNameField.getText().toString(), new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
+                                getActivity().getSupportFragmentManager().popBackStack(); // remove current fragment
+
+                                openFragment(new IndexFragment());
+                            }
+                        }
+                        else {
+                            showToastMessage(R.string.generic_error_message);
+                        }
+                    }
+                });
                 if (getActivity() != null && getActivity().getSupportFragmentManager() != null) {
                     getActivity().getSupportFragmentManager().popBackStack(); // remove current fragment
+
                     openFragment(new IndexFragment());
                 }
-            } else {
+            }
+            else {
                 showToastMessage(R.string.generic_error_message);
             }
         }

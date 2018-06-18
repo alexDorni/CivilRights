@@ -1,23 +1,19 @@
 package com.example.heroalex.copscivilslicense.fragments;
 
 
-import android.content.Context;
 import android.content.Intent;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.heroalex.copscivilslicense.CivilData;
+import com.example.heroalex.copscivilslicense.CopMap;
 import com.example.heroalex.copscivilslicense.MainActivity;
 import com.example.heroalex.copscivilslicense.R;
 import com.example.heroalex.copscivilslicense.ServiceLogin;
@@ -42,10 +38,11 @@ public class IndexFragment extends BaseFragment {
     Unbinder unbinder;
     @BindView(R.id.btn_log_out)
     TextView mBtnLogOut;
+    @BindView(R.id.button_notification_alert)
+    Button mBtnNofiticationAlarm;
 
     public static TextView mEditButtVol;
 
-    public static Button mBtnNofiticationAlarm;
 
     // userId pentru update automat
     public static String mUserUid;
@@ -53,6 +50,7 @@ public class IndexFragment extends BaseFragment {
     // coordonates
     private String mGPSCoordinates = "null";
     private String mCivilStatus = "0";
+    private String mCopStatus = "-1";
 
     // background service
     private Intent startIntent;
@@ -94,27 +92,76 @@ public class IndexFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
+            if (MainActivity.mCopBool == false) {
+
+                DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+
+                // get uid
+                mUserUid = user.getUid();
+
+                // inregistrare in baza de date
+                DatabaseReference usersRef = mRootRef.child(mUserUid);
+
+                // adaugare in baza de date
+                usersRef.setValue(new CivilData.CivilDataBuilder()
+                        .firstName(user.getDisplayName())
+                        .status(mCivilStatus)
+                        .gps(mGPSCoordinates)
+                        .build());
+
+                mHelloText.setText("Sunteti logat cu user-ul : " + user.getDisplayName());
 
 
-            DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
-            // inregistrare in baza de date
-            DatabaseReference usersRef = mRootRef.child(user.getUid());
+                // start background service
+                startIntent = new Intent(getContext(), ServiceLogin.class);
+                startIntent.setAction("start");
+                getActivity().startService(startIntent);
 
-            // adaugare in baza de date
-            usersRef.setValue(new CivilData.CivilDataBuilder()
-                    .firstName(user.getDisplayName())
-                    .status(mCivilStatus)
-                    .gps(mGPSCoordinates)
-                    .build());
 
-            mHelloText.setText("Sunteti logat cu user-ul : " + user.getDisplayName());
+                mBtnNofiticationAlarm.setOnClickListener(new View.OnClickListener() {
 
-            // start background service
-            startIntent = new Intent(getContext(), ServiceLogin.class);
-            startIntent.setAction("start");
-            getActivity().startService(startIntent);
+                    @Override
+                    public void onClick(View v) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
 
+
+                            DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+                            DatabaseReference usersRef = mRootRef.child(user.getUid());
+
+                            usersRef.child("statusPoint").setValue("1");
+                        }
+                    }
+                });
+
+            }
+            else
+                if (MainActivity.mCopBool == true) {
+                    // start serviciu cop + googleMaps + notificare
+                    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+
+                    // get uid
+                    mUserUid = user.getUid();
+
+                    // inregistrare in baza de date
+                    DatabaseReference usersRef = mRootRef.child(mUserUid);
+
+                    Toast.makeText(getContext(), user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                    // adaugare in baza de date
+                    usersRef.setValue(new CivilData.CivilDataBuilder()
+                            .firstName(user.getDisplayName())
+                            .status(mCopStatus)
+                            .gps(mGPSCoordinates)
+                            .build());
+
+                    mHelloText.setText("Sunteti logat cu user-ul : " + user.getDisplayName());
+                    startIntent = new Intent(getContext(), ServiceLogin.class);
+                    startIntent.setAction("start");
+                    getActivity().startService(startIntent);
+
+                    startActivity(new Intent(getContext(), CopMap.class));
+                }
         }
 
 
@@ -127,37 +174,12 @@ public class IndexFragment extends BaseFragment {
                 getActivity().getSupportFragmentManager().popBackStack();
                 openFragment(new LoginFragment());
 
-                // stop service
-                getActivity().stopService(startIntent);
+                    // stop service
+                    getActivity().stopService(startIntent);
             }
         });
 
 
     }
 
-    // INCERCARE CU BUTOANELE DE VOLUM
-    /*
-
-    public void dispatchKeyEvent(KeyEvent event) {
-        int action = event.getAction();
-        int keyCode = event.getKeyCode();
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP)
-            Toast.makeText(getContext(), "1", Toast.LENGTH_SHORT).show();
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
-            Toast.makeText(getContext(), "0", Toast.LENGTH_SHORT).show();
-
-
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                if (action == KeyEvent.ACTION_DOWN) {
-                    //TODO
-                }
-                return true;
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                if (action == KeyEvent.ACTION_DOWN) {
-                    //TODO
-                }
-                return true;
-        }
-    */
 }

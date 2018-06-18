@@ -55,12 +55,13 @@ public class AuthManager {
                 .addOnFailureListener(failureListener);
     }
 
-    public void updateUserName(String name) {
+    public void updateUserName(String name, OnCompleteListener<Void> completeListener) {
         FirebaseUser user = getCurrentUser();
         if (user != null) {
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                     .setDisplayName(name).build();
-            user.updateProfile(profileUpdates);
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(completeListener);
         }
     }
 

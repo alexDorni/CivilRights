@@ -53,7 +53,7 @@
     <!-- Service_log -->
     <string name="title_name">Protection</string>
     <string name="ticker_name">Ticker</string>
-    <string name="content_text">Sunteti protejat</string>
+    <string name="content_text">Page Alert</string>
     <string name="auth_page_login_register">You don\'t have an account? Sign up</string>
     <string name="auth_page_login_remember">I forgot my password</string>
     <string name="auth_page_register_login">I already have an account</string>

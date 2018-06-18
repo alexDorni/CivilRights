@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
 
+        <!-- Maps -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBt6AlnROg_O0H_fSRwSeZXnoJAm9av9KE" />
@@ -33,7 +34,6 @@
 
         <activity android:name=".CopMap"></activity>
 
-        <receiver android:name=".NotificationBroadcast"></receiver>
     </application>
 
 </manifest>
