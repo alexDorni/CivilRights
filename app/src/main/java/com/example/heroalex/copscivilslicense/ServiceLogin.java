@@ -15,8 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.ArrayMap;
@@ -26,16 +24,15 @@ import android.widget.Toast;
 import com.example.heroalex.copscivilslicense.fragments.IndexFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.concurrent.Semaphore;
 
 /**
  * Created by Hero Alex on 3/5/2018.
@@ -53,9 +50,7 @@ public class ServiceLogin extends Service{
 
     public static boolean isServiceRunning = false;
     private static LocationListener mLocationListener;
-    private FirebaseCallback firebaseCallback;
-
-    public static ArrayMap<String, ArrayList<String>> mHashArrayDataFirebase;
+    public static ArrayMap<String, ArrayMap<String, String>> mHashArrayDataFirebase;
 
     @Override
     public void onCreate() {
@@ -87,27 +82,6 @@ public class ServiceLogin extends Service{
                     // asyncron task
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         mHashArrayDataFirebase = new ArrayMap<>();
-
-                        FirebaseGetData(new FirebaseCallback() {
-                            @Override
-                            public void onCallback(ArrayMap<String, ArrayList<String>> arrayListArrayMap) {
-
-                                setmHashArrayDataFirebase(mHashArrayDataFirebase);
-                                if (!mHashArrayDataFirebase.isEmpty()) {
-
-                                    // parcurgere date pentru verificare
-                                    for (int i = 0; i < mHashArrayDataFirebase.size(); ++i)
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                            Log.d("Afisare_Data_Users", i + " : " + mHashArrayDataFirebase.keyAt(i) + " : " + mHashArrayDataFirebase.valueAt(i)) ;
-                                        }
-                                }
-                                else{
-                                    Log.d("Afisare_Data_Users", "Array Map empty");
-                                    }
-                            }
-                        });
-
-
                     }
                     else
                         Log.d("Afisare_Data_Users", "Eroare SDK pentru task asyncron");
@@ -133,6 +107,24 @@ public class ServiceLogin extends Service{
                             Toast.makeText(getApplicationContext(), IndexFragment.mUserUid, Toast.LENGTH_SHORT).show();
                             Log.d("failUpdateChild", IndexFragment.mUserUid);
                         }
+
+                        FirebaseGetData(new FirebaseCallback() {
+                            @Override
+                            public void onCallback(ArrayMap<String, ArrayMap<String, String>> arrayListArrayMap) {
+
+                                setmHashArrayDataFirebase(mHashArrayDataFirebase);
+                                if (!mHashArrayDataFirebase.isEmpty()) {
+
+                                    CopMap.mapArrayMapUsers = mHashArrayDataFirebase;
+                                    // parcurgere date pentru verificare
+
+
+                                }
+                                else{
+                                    Log.d("Afisare_Data_Users", "Array Map empty");
+                                }
+                            }
+                        });
                     }
 
                     @Override
@@ -174,18 +166,20 @@ public class ServiceLogin extends Service{
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot != null) {
                             for (DataSnapshot dspUid : dataSnapshot.getChildren()) {
-                                ArrayList<String> arrayListValues = new ArrayList<>();
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    ArrayMap<String, String> arrayMapListValues = new ArrayMap<>();
 
-                                for (DataSnapshot dspVal : dspUid.getChildren()) {
-                                    Log.d("Inside_onDataChange", dspUid.toString() + " Valoarea: " + dspVal.getValue());
-                                    arrayListValues.add(dspVal.getValue().toString());
+                                    for (DataSnapshot dspVal : dspUid.getChildren()) {
+                                        Log.d("Inside_onDataChange", dspUid.toString() + " Valoarea: " + dspVal.getValue());
+                                        arrayMapListValues.put(dspVal.getKey().toString(), dspVal.getValue().toString());
+                                    }
+                                    // adaugam in ArrayMap <uid-ul, [firstName, coordGPS, statusPoint]>
+                                    mHashArrayDataFirebase.put(dspUid.getKey().toString(), arrayMapListValues);
                                 }
-                                // adaugam in ArrayMap <uid-ul, [firstName, coordGPS, statusPoint]>
-                                mHashArrayDataFirebase.put(dspUid.getKey().toString(), arrayListValues);
-
                             }
                             setmHashArrayDataFirebase(mHashArrayDataFirebase);
                             firebaseCallback.onCallback(mHashArrayDataFirebase);
+                            EventBus.getDefault().post(new EventBusUsers(mHashArrayDataFirebase));
                         }
                     }
 
@@ -199,7 +193,7 @@ public class ServiceLogin extends Service{
     }
 
     private interface FirebaseCallback{
-        void onCallback(ArrayMap<String, ArrayList<String>> arrayMap);
+        void onCallback(ArrayMap<String, ArrayMap<String, String>> arrayMap);
     }
 
 
@@ -241,7 +235,7 @@ public class ServiceLogin extends Service{
         super.onDestroy();
     }
 
-    public void setmHashArrayDataFirebase(ArrayMap<String, ArrayList<String>> mHashArrayDataFirebase ){
+    public void setmHashArrayDataFirebase(ArrayMap<String, ArrayMap<String, String>> mHashArrayDataFirebase ){
         this.mHashArrayDataFirebase = mHashArrayDataFirebase;
     }
 

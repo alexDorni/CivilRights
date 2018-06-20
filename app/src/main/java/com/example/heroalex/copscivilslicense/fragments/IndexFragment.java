@@ -130,6 +130,7 @@ public class IndexFragment extends BaseFragment {
                             DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
                             DatabaseReference usersRef = mRootRef.child(user.getUid());
 
+                            // alarm button set
                             usersRef.child("statusPoint").setValue("1");
                         }
                     }
@@ -147,7 +148,6 @@ public class IndexFragment extends BaseFragment {
                     // inregistrare in baza de date
                     DatabaseReference usersRef = mRootRef.child(mUserUid);
 
-                    Toast.makeText(getContext(), user.getDisplayName(), Toast.LENGTH_SHORT).show();
                     // adaugare in baza de date
                     usersRef.setValue(new CivilData.CivilDataBuilder()
                             .firstName(user.getDisplayName())
@@ -156,9 +156,7 @@ public class IndexFragment extends BaseFragment {
                             .build());
 
                     mHelloText.setText("Sunteti logat cu user-ul : " + user.getDisplayName());
-                    startIntent = new Intent(getContext(), ServiceLogin.class);
-                    startIntent.setAction("start");
-                    getActivity().startService(startIntent);
+
 
                     startActivity(new Intent(getContext(), CopMap.class));
                 }
