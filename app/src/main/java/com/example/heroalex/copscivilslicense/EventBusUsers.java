@@ -1,25 +1,18 @@
 package com.example.heroalex.copscivilslicense;
 
-import android.util.ArrayMap;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-/**
- * Created by Hero Alex on 6/20/2018.
- */
-
-public class EventBusUsers {
-    public static ArrayMap<String, ArrayMap<String, String>> mHashArrayDataFirebase;
+import java.util.ArrayList;
+import java.util.List;
 
 
-    public EventBusUsers(ArrayMap<String, ArrayMap<String, String>> mHashArrayDataFirebase){
+class EventBusUsers {
+    private List<UserFirebase> mHashArrayDataFirebase = new ArrayList<>();
+
+
+    EventBusUsers(List<UserFirebase> mHashArrayDataFirebase){
         this.mHashArrayDataFirebase = mHashArrayDataFirebase;
     }
 
-    public EventBusUsers() { }
-
-    public static ArrayMap<String, ArrayMap<String, String>> getmHashArrayDataFirebase() {
+    List<UserFirebase> getmHashArrayDataFirebase() {
         return mHashArrayDataFirebase;
     }
 }

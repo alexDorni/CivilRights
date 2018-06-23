@@ -173,7 +173,9 @@ public class IndexFragment extends BaseFragment {
                 openFragment(new LoginFragment());
 
                     // stop service
+                if (startIntent != null) {
                     getActivity().stopService(startIntent);
+                }
             }
         });
 

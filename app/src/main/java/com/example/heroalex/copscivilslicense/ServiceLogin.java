@@ -1,6 +1,5 @@
 package com.example.heroalex.copscivilslicense;
 
-import android.*;
 import android.Manifest;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -33,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Hero Alex on 3/5/2018.
@@ -40,17 +40,21 @@ import java.util.ArrayList;
 
 public class ServiceLogin extends Service{
 
-
+    private static final String JKEY_FIRST_NAME = "firstName";
+    private static final String JKEY_COORDINATES = "gpscoordonates";
+    private static final String JKEY_STATUS = "statusPoint";
 
     // TODO google maps ruta coordonate distante
 
     private LocationManager mLocationManager;
     private static final String ACTION_MAIN = "action";
-    private static final int NOTIFICATION_ID = 543;
+    public static final int NOTIFICATION_ID = 543;
 
     public static boolean isServiceRunning = false;
     private static LocationListener mLocationListener;
     public static ArrayMap<String, ArrayMap<String, String>> mHashArrayDataFirebase;
+
+    private List<UserFirebase> users = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -79,13 +83,6 @@ public class ServiceLogin extends Service{
             else {
                 if (MainActivity.mCopBool == true) {
 
-                    // asyncron task
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        mHashArrayDataFirebase = new ArrayMap<>();
-                    }
-                    else
-                        Log.d("Afisare_Data_Users", "Eroare SDK pentru task asyncron");
-
                 }
             }
 
@@ -108,23 +105,7 @@ public class ServiceLogin extends Service{
                             Log.d("failUpdateChild", IndexFragment.mUserUid);
                         }
 
-                        FirebaseGetData(new FirebaseCallback() {
-                            @Override
-                            public void onCallback(ArrayMap<String, ArrayMap<String, String>> arrayListArrayMap) {
-
-                                setmHashArrayDataFirebase(mHashArrayDataFirebase);
-                                if (!mHashArrayDataFirebase.isEmpty()) {
-
-                                    CopMap.mapArrayMapUsers = mHashArrayDataFirebase;
-                                    // parcurgere date pentru verificare
-
-
-                                }
-                                else{
-                                    Log.d("Afisare_Data_Users", "Array Map empty");
-                                }
-                            }
-                        });
+                        FirebaseGetData();
                     }
 
                     @Override
@@ -157,29 +138,44 @@ public class ServiceLogin extends Service{
 
     }
 
-    public void FirebaseGetData(final FirebaseCallback firebaseCallback){
+    public void FirebaseGetData(){
         DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
         mRootRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
+
+
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot != null) {
+                            users.clear();
                             for (DataSnapshot dspUid : dataSnapshot.getChildren()) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                    ArrayMap<String, String> arrayMapListValues = new ArrayMap<>();
-
+                                    UserFirebase user = new UserFirebase();
+                                    user.setUid(dspUid.getKey());
                                     for (DataSnapshot dspVal : dspUid.getChildren()) {
-                                        Log.d("Inside_onDataChange", dspUid.toString() + " Valoarea: " + dspVal.getValue());
-                                        arrayMapListValues.put(dspVal.getKey().toString(), dspVal.getValue().toString());
+                                        if (dspVal.getValue() == null) {
+                                            Log.d("TAG", "DspVal null");
+                                            continue;
+                                        }
+                                        if (dspVal.getKey().equals(JKEY_COORDINATES)) {
+                                            user.setCoordinates(dspVal.getValue().toString());
+                                        }
+                                        if (dspVal.getKey().equals(JKEY_FIRST_NAME)) {
+                                            user.setName(dspVal.getValue().toString());
+                                        }
+                                        if (dspVal.getKey().equals(JKEY_STATUS)) {
+                                            user.setStatus(dspVal.getValue().toString());
+                                        }
                                     }
-                                    // adaugam in ArrayMap <uid-ul, [firstName, coordGPS, statusPoint]>
-                                    mHashArrayDataFirebase.put(dspUid.getKey().toString(), arrayMapListValues);
+                                    users.add(user);
                                 }
                             }
-                            setmHashArrayDataFirebase(mHashArrayDataFirebase);
-                            firebaseCallback.onCallback(mHashArrayDataFirebase);
-                            EventBus.getDefault().post(new EventBusUsers(mHashArrayDataFirebase));
+                            if (!users.isEmpty()) {
+                                EventBus.getDefault().post(new EventBusUsers(users));
+                            } else {
+                                Log.d("Tag", "User list empty");
+                            }
                         }
                     }
 
@@ -192,9 +188,6 @@ public class ServiceLogin extends Service{
         );
     }
 
-    private interface FirebaseCallback{
-        void onCallback(ArrayMap<String, ArrayMap<String, String>> arrayMap);
-    }
 
 
     public void startServiceWithNotification() {
@@ -203,18 +196,20 @@ public class ServiceLogin extends Service{
         isServiceRunning = true;
 
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        notificationIntent.setAction(ACTION_MAIN);  // A string containing the action name
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        notificationIntent.putExtra("id", NOTIFICATION_ID);
 
         PendingIntent actionIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
 
-        notificationIntent.setAction(ACTION_MAIN);  // A string containing the action name
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
 
 
         Notification notification = new Notification.Builder(this)
                 .setContentTitle("Notificare Protectie")
                 .setContentText( getResources().getString(R.string.content_text))
-                .setSmallIcon(R.drawable.ic_stat_protection)
+                .setSmallIcon(R.drawable.ic_notification_stat_protection)
                 .setContentIntent(actionIntent)
                 .setOngoing(true)
                 .build();
@@ -234,10 +229,4 @@ public class ServiceLogin extends Service{
         isServiceRunning = false;
         super.onDestroy();
     }
-
-    public void setmHashArrayDataFirebase(ArrayMap<String, ArrayMap<String, String>> mHashArrayDataFirebase ){
-        this.mHashArrayDataFirebase = mHashArrayDataFirebase;
-    }
-
-
 }

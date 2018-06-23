@@ -63,95 +63,21 @@ public class MainActivity extends AppCompatActivity{
             }
         });
         //checkPermission();
+        if (getIntent() != null) {
+            if (getIntent().getIntExtra("id", 0) == ServiceLogin.NOTIFICATION_ID) {
+                startCivil();
+            } else {
+                Log.d("runt", getIntent().getIntExtra("id", 0) + "");
+            }
+        }
+    }
+
+    private void startCivil() {
+        mCopBool = false;
+        startActivity(new Intent(MainActivity.this, BaseActivity.class));
     }
 
 
-/*
-    private void validateFields(){
-
-        String variableEmail = mFieldEmail.getText().toString();
-        final String email = variableEmail.replaceAll("[.]", ",");
-        final String password = mFieldPassword.getText().toString();
-
-        if (TextUtils.isEmpty(email)){
-
-            Toast.makeText(this, "Please enter the email", Toast.LENGTH_SHORT).show();
-            mFieldEmail.setError("Please enter the email");
-            return;
-        }
-        if (TextUtils.isEmpty(password)){
-
-            Toast.makeText(this, "Please insert the password", Toast.LENGTH_SHORT).show();
-            mFieldPassword.setError("Please insert the password");
-            return;
-        }
-
-        final DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference("civils");
-
-        mRootRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot civils : dataSnapshot.getChildren()) {
-                    String key = civils.getKey(); // the email
-                    if (email.equals(key)) {
-                        Log.d("runt", "Key:" + key);
-                        for (DataSnapshot civilsInfo : civils.getChildren()) {
-
-                            if ("password".equals(civilsInfo.getKey())) {
-
-                                // the password field
-                                String passwordInfo = civilsInfo.getValue().toString();
-                                Log.d("runt", "val:" + passwordInfo);
-
-                                if (password.equals(passwordInfo)) {
-
-                                    //succes
-                                    succesOK = 1;
-                                    Toast.makeText(getApplicationContext(), "Succes Login", Toast.LENGTH_SHORT).show();
-                                    Log.d("runtSucc", "intrat");
-                                    Log.d("SuccOkLogin: ", "" + succesOK);
-                                    break;
-                                } else {
-                                    //error password
-                                    succesOK = 0;
-                                    Toast.makeText(getApplicationContext(), "Password or email incorrect", Toast.LENGTH_SHORT).show();
-                                    Log.d("runtErrorPass", "val: " + passwordInfo);
-                                }
-                            }
-
-                        }
-                        //succes login
-                        if (succesOK == 1) {
-                            //for background coordonates
-                            mEmailName = email;
-                            Intent startIntent = new Intent(getApplicationContext(), ServiceLogin.class);
-                            startIntent.setAction("start");
-                            startService(startIntent);
-
-                            return;
-                        }
-                    }
-                }
-                Log.d("succesOKstatus", "succesOK: " + succesOK);
-                if (succesOK == -1) {
-                    //error email
-                    Log.d("runtErrorMail", "Key:" + succesOK);
-                    Toast.makeText(getApplicationContext(), "Password or email incorrect", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-    }
-*/
     private boolean checkPermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
