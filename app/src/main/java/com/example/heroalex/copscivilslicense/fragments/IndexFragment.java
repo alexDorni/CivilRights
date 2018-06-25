@@ -32,14 +32,7 @@ import butterknife.Unbinder;
  */
 public class IndexFragment extends BaseFragment {
 
-    // bind toate layout-urile
-    @BindView(R.id.hello_text)
-    TextView mHelloText;
-    Unbinder unbinder;
-    @BindView(R.id.btn_log_out)
-    TextView mBtnLogOut;
-    @BindView(R.id.button_notification_alert)
-    Button mBtnNofiticationAlarm;
+
 
     public static TextView mEditButtVol;
 
@@ -64,6 +57,14 @@ public class IndexFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
     }
+    // bind toate layout-urile
+    @BindView(R.id.hello_text)
+    TextView mHelloText;
+    Unbinder unbinder;
+    @BindView(R.id.btn_log_out)
+    TextView mBtnLogOut;
+    @BindView(R.id.button_notification_alert)
+    Button mBtnNofiticationAlarm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
