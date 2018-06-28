@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Maps -->
+        <!-- Maps AIzaSyBt6AlnROg_O0H_fSRwSeZXnoJAm9av9KE -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBt6AlnROg_O0H_fSRwSeZXnoJAm9av9KE" />

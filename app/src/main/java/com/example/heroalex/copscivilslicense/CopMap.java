@@ -120,7 +120,6 @@ public class CopMap extends FragmentActivity implements OnMapReadyCallback {
                 }
 
                 if (user.getStatus().equals("-1")) {
-
                     iconMarker = BitmapDescriptorFactory.fromResource(R.drawable.ic_police_state_neutral);
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(latLngGPS)
@@ -128,6 +127,7 @@ public class CopMap extends FragmentActivity implements OnMapReadyCallback {
                             .icon(iconMarker);
                     mMap.addMarker(markerOptions);
                 }
+
                 if (user.getStatus().equals("0")) {
                     iconMarker = BitmapDescriptorFactory.fromResource(R.drawable.ic_civil_status_ok);
                     MarkerOptions markerOptions = new MarkerOptions()
@@ -136,7 +136,9 @@ public class CopMap extends FragmentActivity implements OnMapReadyCallback {
                             .icon(iconMarker);
                     mMap.addMarker(markerOptions);
                 }
+
                 if (user.getStatus().equals("1")) {
+                    double[] coordonatesGPSCivil = user.getCoordinates();
                     iconMarker = BitmapDescriptorFactory.fromResource(R.drawable.ic_civil_status_danger);
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(latLngGPS)
@@ -144,7 +146,16 @@ public class CopMap extends FragmentActivity implements OnMapReadyCallback {
                             .icon(iconMarker);
                     mMap.addMarker(markerOptions);
 
+                    for (UserFirebase userCop : mapArrayMapUsers){
+                        if(userCop.getStatus().equals("-1")){
+                            double[] coordonatesGPSCop = userCop.getCoordinates();
+                            setRouteBetweenTwoPoints(new LatLng(coordonatesGPSCivil[0], coordonatesGPSCivil[1]),
+                                                     new LatLng(coordonatesGPSCop[0],coordonatesGPSCop[1]));
+
+                        }
+                    }
                 }
+
                 if (user.getStatus().equals("2")) {
                     iconMarker = BitmapDescriptorFactory.fromResource(R.drawable.ic_civil_status_on_resolve);
                     MarkerOptions markerOptions = new MarkerOptions()
@@ -155,14 +166,18 @@ public class CopMap extends FragmentActivity implements OnMapReadyCallback {
                 }
 
             }
-            Polyline line = mMap.addPolyline(new PolylineOptions()
-                    .add(new LatLng(47.1257305, 27.5662089), new LatLng(47.1558029, 27.5836955))
-                    .width(5)
-                    .color(Color.RED));
-            //  mMap.moveCamera(CameraUpdateFactory.newLatLng(latLngGPS));
-            // distanta dintre 2 puncte
-            //  Location.distanceBetween();
         }
+    }
+
+    private void setRouteBetweenTwoPoints(LatLng origin, LatLng dest){
+        Object[] dataTransfer = new Object[4];
+        dataTransfer[0] = mMap;
+        dataTransfer[1] = getDirectionsUrl(origin, dest);
+        dataTransfer[2] = new LatLng(origin.latitude, origin.longitude);
+        dataTransfer[3] = new LatLng(dest.latitude, dest.longitude);
+
+        GetDirectionsData getDirectionsData = new GetDirectionsData(this);
+        getDirectionsData.execute(dataTransfer);
     }
 
     private String getDirectionsUrl(LatLng origin, LatLng dest){
@@ -173,85 +188,20 @@ public class CopMap extends FragmentActivity implements OnMapReadyCallback {
         // value of destination
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
 
-        // value of sensor
-        String sensor = "sensor=false";
-
-        // modul pentru a gasi directia
-        String mode = "mode=driving";
-
         // API key
-        String api_key_route = "key=" + "AIzaSyAdGqNtCnWarJid1B3gZf9GvusOiBF-zIY";
+        String api_key_route = "key=" + "AIzaSyBt6AlnROg_O0H_fSRwSeZXnoJAm9av9KE";
 
         // build the full param
-        String param = str_org + "&" + str_dest + "&" + sensor + "&" + mode + "&" + api_key_route;
+        String param = str_org + "&" + str_dest +  "&" + api_key_route;
 
         // output format
         String output = "json";
 
-        //str =  AIzaSyAdGqNtCnWarJid1B3gZf9GvusOiBF-zIY
         // url request
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param;
     }
 
-    private GeoApiContext getGeoApiContext(){
-        GeoApiContext geoApiContext = new GeoApiContext();
 
-        return geoApiContext.setQueryRateLimit(3)
-                .setApiKey("AIzaSyAdGqNtCnWarJid1B3gZf9GvusOiBF-zIY")
-                .setConnectTimeout(1, TimeUnit.SECONDS)
-                .setReadTimeout(1, TimeUnit.SECONDS)
-                .setWriteTimeout(1, TimeUnit.SECONDS);
-    }
-    private void DirectionFromPoints(String origin, String destination){
-        DateTime now = new DateTime();
-        try {
-            DirectionsResult result = DirectionsApi.newRequest(getGeoApiContext())
-                    .mode(TravelMode.DRIVING).origin(origin)
-                    .destination(destination).departureTime(now)
-                    .await();
-        } catch (ApiException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String downloadUrl(String strUrl) throws IOException {
-        String data = "";
-        InputStream iStream = null;
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(strUrl);
-
-            urlConnection = (HttpURLConnection) url.openConnection();
-
-            urlConnection.connect();
-
-            iStream = urlConnection.getInputStream();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-
-            StringBuffer sb = new StringBuffer();
-
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-
-            data = sb.toString();
-
-            br.close();
-
-        } catch (Exception e) {
-            Log.d("Exception", e.toString());
-        } finally {
-            iStream.close();
-            urlConnection.disconnect();
-        }
-        return data;
-    }
     @Subscribe
     public void receiveArrayMap(EventBusUsers eventBusUsers) {
         this.mapArrayMapUsers = eventBusUsers.getmHashArrayDataFirebase();

@@ -172,6 +172,7 @@ public class ServiceLogin extends Service{
                                 }
                             }
                             if (!users.isEmpty()) {
+                                // apel EventBus
                                 EventBus.getDefault().post(new EventBusUsers(users));
                             } else {
                                 Log.d("Tag", "User list empty");
