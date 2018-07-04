@@ -47,10 +47,17 @@ public class ServiceLogin extends Service{
     // TODO google maps ruta coordonate distante
 
     private LocationManager mLocationManager;
+
+    // civil
     private static final String ACTION_MAIN = "action";
     public static final int NOTIFICATION_ID = 543;
-
     public static boolean isServiceRunning = false;
+
+    // cop
+    private static final String ACTION_MAIN_COP = "acton_cop";
+    public static final int NOTIFICATION_COP_ID = 213;
+    public static boolean isServiceCopRunning = false;
+
     private static LocationListener mLocationListener;
     public static ArrayMap<String, ArrayMap<String, String>> mHashArrayDataFirebase;
 
@@ -82,7 +89,7 @@ public class ServiceLogin extends Service{
             }
             else {
                 if (MainActivity.mCopBool == true) {
-
+                    startServiceNotificationCop();
                 }
             }
 
@@ -127,7 +134,7 @@ public class ServiceLogin extends Service{
                         ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "No permission", Toast.LENGTH_SHORT).show();
                 } else {
-                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,
+                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5,
                             0, mLocationListener);
                 }
 
@@ -139,20 +146,20 @@ public class ServiceLogin extends Service{
     }
 
     public void FirebaseGetData(){
-        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
+        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
         mRootRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
-
-
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot != null) {
                             users.clear();
+                            // noduri principale
                             for (DataSnapshot dspUid : dataSnapshot.getChildren()) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                                     UserFirebase user = new UserFirebase();
                                     user.setUid(dspUid.getKey());
+                                    // datele din nod: firstName, gpsCoordonates, statusPoint
                                     for (DataSnapshot dspVal : dspUid.getChildren()) {
                                         if (dspVal.getValue() == null) {
                                             Log.d("TAG", "DspVal null");
@@ -223,11 +230,40 @@ public class ServiceLogin extends Service{
         stopForeground(true);
         stopSelf();
         isServiceRunning = false;
+        isServiceCopRunning = false;
     }
 
     @Override
     public void onDestroy() {
         isServiceRunning = false;
+        isServiceCopRunning = false;
         super.onDestroy();
+    }
+
+    public void startServiceNotificationCop(){
+        if (isServiceCopRunning) return;
+        isServiceCopRunning = true;
+
+        Intent notificationIntent = new Intent(getApplicationContext(), CopMap.class);
+        notificationIntent.setAction(ACTION_MAIN_COP);  // A string containing the action name
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        notificationIntent.putExtra("id", NOTIFICATION_COP_ID);
+
+        PendingIntent actionIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+
+
+
+
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle("Notificare Alerta Civil In Pericol")
+                .setContentText( getResources().getString(R.string.content_text))
+                .setSmallIcon(R.drawable.ic_notification_cop)
+                .setContentIntent(actionIntent)
+                .setOngoing(true)
+                .build();
+
+        notification.flags = notification.flags | Notification.FLAG_NO_CLEAR;
+        startForeground(NOTIFICATION_COP_ID, notification);
     }
 }

@@ -27,6 +27,10 @@ public class UserFirebase {
         this.status = status;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     public String getName() {
         return name;
     }
@@ -45,7 +49,4 @@ public class UserFirebase {
         return new double[] {0, 0};
     }
 
-    public String getStatus() {
-        return status;
-    }
 }

@@ -2,9 +2,12 @@ package com.example.heroalex.copscivilslicense.fragments;
 
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +21,16 @@ import com.example.heroalex.copscivilslicense.MainActivity;
 import com.example.heroalex.copscivilslicense.R;
 import com.example.heroalex.copscivilslicense.ServiceLogin;
 import com.example.heroalex.copscivilslicense.managers.AuthManager;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +53,7 @@ public class IndexFragment extends BaseFragment {
     private String mGPSCoordinates = "null";
     private String mCivilStatus = "0";
     private String mCopStatus = "-1";
+    private boolean mCivilAlert = false;
 
     // background service
     private Intent startIntent;
@@ -120,6 +130,8 @@ public class IndexFragment extends BaseFragment {
                 getActivity().startService(startIntent);
 
 
+
+
                 mBtnNofiticationAlarm.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -133,9 +145,11 @@ public class IndexFragment extends BaseFragment {
 
                             // alarm button set
                             usersRef.child("statusPoint").setValue("1");
+                            Toast.makeText(getContext(), "Un echipaj va prelua semnalul de alerta", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
+
 
             }
             else
@@ -158,7 +172,49 @@ public class IndexFragment extends BaseFragment {
 
                     mHelloText.setText("Sunteti logat cu user-ul : " + user.getDisplayName());
 
+                    mBtnNofiticationAlarm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
+                            DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                            mRootRef.child(user.getUid()).child("firstName").setValue(user.getDisplayName(),new DatabaseReference.CompletionListener(){
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    if (databaseError != null) {
+                                        Log.d("Data not saved. ", databaseError.getMessage());
+                                    } else {
+                                        Log.d("Data saved ", "Success");
+                                    }
+                                }
+                            });
+
+                            mRootRef.child(user.getUid()).child("statusPoint").setValue("-1", new DatabaseReference.CompletionListener(){
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    if (databaseError != null) {
+                                        Log.d("Data not saved. ", databaseError.getMessage());
+                                    } else {
+                                        Log.d("Data saved ", "Success");
+                                    }
+                                }
+                            });
+                            mRootRef.child(CopMap.globalUidCivil).child("statusPoint").setValue("0", new DatabaseReference.CompletionListener(){
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    if (databaseError != null) {
+                                        Log.d("Data not saved. ", databaseError.getMessage());
+                                    } else {
+                                        Log.d("Data saved ", "Success");
+                                    }
+                                }
+                            });
+                            CopMap.unickDialogStatic = false;
+                            startActivity(new Intent(getContext(), CopMap.class));
+                        }
+                    });
                     startActivity(new Intent(getContext(), CopMap.class));
                 }
         }

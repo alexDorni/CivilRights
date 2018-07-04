@@ -27,9 +27,12 @@ import java.net.URL;
 public class GetDirectionsData extends AsyncTask<Object, String, String> {
 
     private GoogleMap mMap;
-    String urlJSON;
-    LatLng origin, dest;
+    private String urlJSON;
+    private LatLng origin, dest;
 
+    // suma timpurilor directiilor
+    public static int sumDurationRoute = 0;
+    
     public GetDirectionsData(CopMap copMap) {
     }
 
@@ -89,6 +92,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
 
+        Log.d("dataSee", s);
         try {
             JSONObject jsonObject = new JSONObject(s);
             JSONArray jsonArray = jsonObject.getJSONArray("routes").getJSONObject(0)
@@ -100,24 +104,28 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
 
             JSONObject jsonObjectPoints;
 
-            for (int i = 0; i < countVariants; ++i){
-                jsonObjectPoints = jsonArray.getJSONObject(i);
+            // cel mai apropiat Cop
+                for (int i = 0; i < countVariants; ++i){
+                    jsonObjectPoints = jsonArray.getJSONObject(i);
 
-                // luam punctele
-                String polygone = jsonObjectPoints.getJSONObject("polyline").getString("points");
+                    // luam punctele
+                    String polygone = jsonObjectPoints.getJSONObject("polyline").getString("points");
 
-                polyline_array[i] = polygone;
-            }
+                    polyline_array[i] = polygone;
+                }
 
-            int counterPointsArray = polyline_array.length;
-            for (int i = 0; i < counterPointsArray; ++i){
-                PolylineOptions options = new PolylineOptions();
-                options.color(Color.YELLOW);
-                options.width(10);
-                options.addAll(PolyUtil.decode(polyline_array[i]));
+                // desenam ruta
+                int counterPointsArray = polyline_array.length;
+                for (int i = 0; i < counterPointsArray; ++i){
+                    PolylineOptions options = new PolylineOptions();
+                    options.color(Color.BLUE);
+                    options.width(10);
+                    options.addAll(PolyUtil.decode(polyline_array[i]));
 
-                mMap.addPolyline(options);
-            }
+                    mMap.addPolyline(options);
+                }
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
