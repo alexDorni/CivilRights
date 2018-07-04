@@ -28,20 +28,11 @@ import com.google.firebase.database.ValueEventListener;
  */
 
 public class CopAcceptDialogFragment extends DialogFragment{
-    @Override
-    public void dismiss() {
-        Toast.makeText(getActivity(), "Este cineva asignat", Toast.LENGTH_SHORT).show();
-        super.dismiss();
-    }
 
-    @Override
+       @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        if (CopMap.unickDialogStatic) {
-            dismiss();
-            return builder.create();
-        } else {
+            builder
             builder.setMessage(R.string.dialog_cop)
                     .setPositiveButton(R.string.dialog_cop_accept, new DialogInterface.OnClickListener() {
                         @RequiresApi(api = Build.VERSION_CODES.M)
@@ -52,17 +43,6 @@ public class CopAcceptDialogFragment extends DialogFragment{
                             FirebaseUser userCop = FirebaseAuth.getInstance().getCurrentUser();
                             DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
-                            mRootRef.child(CopMap.globalUidCivil).child("firstName").setValue(userCop.getUid(),new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                    if (databaseError != null) {
-                                        Log.d("Data not saved. ", databaseError.getMessage());
-                                    } else {
-                                        Log.d("Data saved ", "Success");
-                                    }
-                                }
-
-                            });
 
                             mRootRef.child(CopMap.globalUidCivil).child("statusPoint").setValue("2", new DatabaseReference.CompletionListener() {
                                 @Override
@@ -108,7 +88,5 @@ public class CopAcceptDialogFragment extends DialogFragment{
                         }
                     });
             return builder.create();
-
-        }
     }
 }

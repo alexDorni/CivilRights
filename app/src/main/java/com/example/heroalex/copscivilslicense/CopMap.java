@@ -177,102 +177,99 @@ public class CopMap extends FragmentActivity implements OnMapReadyCallback {
                     FirebaseUser userFirebaseCop = FirebaseAuth.getInstance().getCurrentUser();
                     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
-                 mRootRef.child(userFirebaseCop.getUid()).child(JKEY_COORDINATES).addListenerForSingleValueEvent(new ValueEventListener() {
-                     @Override
-                     public void onDataChange(DataSnapshot dataSnapshot) {
+                    mRootRef.child(userFirebaseCop.getUid()).child(JKEY_COORDINATES).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                         DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-                         mRootRef.addListenerForSingleValueEvent(
-                                 new ValueEventListener() {
-                                     @Override
-                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                         boolean okCop = false;
-                                         usersFirebaseArrayCoordonates.clear();
-                                         if (dataSnapshot != null) {
-                                             // verificam daca uid ul civilului e egal cu firstName ul unui politist
-                                             for (DataSnapshot usersFireBaseCivilUid : dataSnapshot.getChildren()) {
+                            DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+                            mRootRef.addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            boolean okCop = false;
+                                            usersFirebaseArrayCoordonates.clear();
+                                            if (dataSnapshot != null) {
+                                                // verificam daca uid ul civilului e egal cu firstName ul unui politist
+                                                for (DataSnapshot usersFireBaseCivilUid : dataSnapshot.getChildren()) {
 
-                                                 for (DataSnapshot usersFireBase : dataSnapshot.getChildren())
-                                                     for (DataSnapshot usertFirebaseData : usersFireBase.getChildren()) {
-                                                         if (usertFirebaseData.getKey().equals(JKEY_FIRST_NAME)) {
-                                                             if (usersFireBaseCivilUid.getKey().equals(usertFirebaseData.getValue())) {
-                                                                 okCop = true;
-                                                             }
-                                                         }
-                                                         if (okCop == true) {
-                                                             if (usertFirebaseData.getKey().equals(JKEY_COORDINATES)) {
-                                                                 UserFirebase userFirebase = new UserFirebase();
+                                                    for (DataSnapshot usersFireBase : dataSnapshot.getChildren())
+                                                        for (DataSnapshot usertFirebaseData : usersFireBase.getChildren()) {
+                                                            if (usertFirebaseData.getKey().equals(JKEY_FIRST_NAME)) {
+                                                                if (usersFireBaseCivilUid.getKey().equals(usertFirebaseData.getValue())) {
+                                                                    okCop = true;
+                                                                }
+                                                            }
+                                                            if (okCop == true) {
+                                                                if (usertFirebaseData.getKey().equals(JKEY_COORDINATES)) {
+                                                                    UserFirebase userFirebase = new UserFirebase();
 
-                                                                 // cop coordonates
-                                                                 userFirebase.setCoordinates(usertFirebaseData.getValue().toString());
-                                                                 usersFirebaseArrayCoordonates.add(userFirebase);
+                                                                    // cop coordonates
+                                                                    userFirebase.setCoordinates(usertFirebaseData.getValue().toString());
+                                                                    usersFirebaseArrayCoordonates.add(userFirebase);
 
-                                                                 // civil coordonates
-                                                                 for (DataSnapshot civilGPS : usersFireBaseCivilUid.getChildren()) {
-                                                                     if (civilGPS.getKey().equals(JKEY_COORDINATES)) {
+                                                                    // civil coordonates
+                                                                    for (DataSnapshot civilGPS : usersFireBaseCivilUid.getChildren()) {
+                                                                        if (civilGPS.getKey().equals(JKEY_COORDINATES)) {
 
-                                                                         UserFirebase userFirebase1 = new UserFirebase();
-                                                                         userFirebase1.setCoordinates(civilGPS.getValue().toString());
-                                                                         usersFirebaseArrayCoordonates.add(userFirebase1);
-                                                                         okCop = false;
-                                                                     }
-                                                                 }
-                                                             }
-                                                         }
-                                                     }
-                                             }
-                                             for (int i = 0; i < usersFirebaseArrayCoordonates.size(); ++i) {
-                                                 Log.d("coords1", String.valueOf(usersFirebaseArrayCoordonates.get(i).getCoordinates()[0])
-                                                         + String.valueOf(usersFirebaseArrayCoordonates.get(i + 1).getCoordinates()[0]));
-                                                 break;
-                                             }
-                                             if (!usersFirebaseArrayCoordonates.isEmpty()) {
-                                                 // apel EventBus
-                                                 Log.d("TagList", "User list empty");
-                                                 EventBus.getDefault().post(new EventBusGetCoords(usersFirebaseArrayCoordonates));
-                                             } else {
-                                                 Log.d("TagList", "User list empty");
-                                             }
-                                         }
-                                     }
+                                                                            UserFirebase userFirebase1 = new UserFirebase();
+                                                                            userFirebase1.setCoordinates(civilGPS.getValue().toString());
+                                                                            usersFirebaseArrayCoordonates.add(userFirebase1);
+                                                                            okCop = false;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                }
+                                                for (int i = 0; i < usersFirebaseArrayCoordonates.size(); ++i) {
+                                                    Log.d("coords1", String.valueOf(usersFirebaseArrayCoordonates.get(i).getCoordinates()[0])
+                                                            + String.valueOf(usersFirebaseArrayCoordonates.get(i + 1).getCoordinates()[0]));
+                                                    break;
+                                                }
+                                                if (!usersFirebaseArrayCoordonates.isEmpty()) {
+                                                    // apel EventBus
+                                                    Log.d("TagList", "User list empty");
+                                                    EventBus.getDefault().post(new EventBusGetCoords(usersFirebaseArrayCoordonates));
+                                                } else {
+                                                    Log.d("TagList", "User list empty");
+                                                }
+                                            }
+                                        }
 
-                                     @Override
-                                     public void onCancelled(DatabaseError databaseError) {
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
 
-                                     }
-                                 }
-                         );
-                     }
+                                        }
+                                    }
+                            );
+                        }
 
-                     @Override
-                     public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                     }
-                 });
-
+                        }
+                    });
 
 
                     // set route
                     for (int i = 0; i < usersFirebaseArrayCoordonates.size(); ++i) {
                         Log.d("coords", String.valueOf(usersFirebaseArrayCoordonates.get(i).getCoordinates()[0])
-                                            + " : " + String.valueOf(usersFirebaseArrayCoordonates.get(i).getCoordinates()[1])
-                                            +  "\n" + String.valueOf(usersFirebaseArrayCoordonates.get(i+1).getCoordinates()[0])
-                                            + " : " + String.valueOf(usersFirebaseArrayCoordonates.get(i+1).getCoordinates()[1]));
+                                + " : " + String.valueOf(usersFirebaseArrayCoordonates.get(i).getCoordinates()[1])
+                                + "\n" + String.valueOf(usersFirebaseArrayCoordonates.get(i + 1).getCoordinates()[0])
+                                + " : " + String.valueOf(usersFirebaseArrayCoordonates.get(i + 1).getCoordinates()[1]));
 
                         setRouteBetweenTwoPoints(new LatLng(usersFirebaseArrayCoordonates.get(i).getCoordinates()[0],
-                                                            usersFirebaseArrayCoordonates.get(i).getCoordinates()[1]),
-                                                 new LatLng(usersFirebaseArrayCoordonates.get(i + 1).getCoordinates()[0],
-                                                            usersFirebaseArrayCoordonates.get(i + 1).getCoordinates()[1])
-                                                );
+                                        usersFirebaseArrayCoordonates.get(i).getCoordinates()[1]),
+                                new LatLng(usersFirebaseArrayCoordonates.get(i + 1).getCoordinates()[0],
+                                        usersFirebaseArrayCoordonates.get(i + 1).getCoordinates()[1])
+                        );
                         break;
                     }
                 }
 
 
-                // civil in danger
                 if (user.getStatus().equals("1")) {
                     globalUidCivil = user.getUid();
-                    double[] coordonatesGPSCivil = user.getCoordinates();
                     iconMarker = BitmapDescriptorFactory.fromResource(R.drawable.ic_civil_status_danger);
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(latLngGPS)
@@ -281,51 +278,19 @@ public class CopMap extends FragmentActivity implements OnMapReadyCallback {
                     mMap.addMarker(markerOptions);
                     Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                     // Vibrate for 500 milliseconds
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        //deprecated in API 26
+                        v.vibrate(500);
+                    }
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                        } else {
-                            //deprecated in API 26
-                            v.vibrate(500);
-                        }
+                    CopAcceptDialogFragment dialogFragment = new CopAcceptDialogFragment();
+                    for (UserFirebase userCop : mapArrayMapUsers) {
+                        if (userCop.getStatus().equals("-1"))  {
 
-
-                        CopAcceptDialogFragment dialogFragment = new CopAcceptDialogFragment();
-                        for (UserFirebase userCop : mapArrayMapUsers) {
-                            if (userCop.getStatus().equals("-1")) {
-
-
-                                DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-
-                                mRootRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot userUid : dataSnapshot.getChildren()){
-                                            for (DataSnapshot userData : userUid.getChildren()){
-                                                if (userData.getKey().equals(JKEY_FIRST_NAME)){
-                                                    if (userData.getValue().equals(userUid.getKey())){
-                                                        unickDialog = true;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        Log.d("unickDialogInside", String.valueOf(unickDialog));
-                                        EventBus.getDefault().post(new EventBusGetUnick(unickDialog));
-                                    }
-
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-
-
-                                unickDialogStatic = unickDialog;
-                                Log.d("unickDialog", String.valueOf(unickDialogStatic));
+                            if (dialogFragment.)
                                 dialogFragment.show(getFragmentManager(), "TAG");
-
-
 
                         }
                     }
